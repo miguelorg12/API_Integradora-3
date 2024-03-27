@@ -9,7 +9,7 @@ class Bebes extends Model
 {
     use HasFactory;
     protected $table = 'bebes';
-    protected $fillable = ['id_incubadora', 'id_estado', 'nombre', 'apellido'];
+    protected $fillable = ['id_incubadora', 'id_estado', 'nombre', 'apellido', 'sexo', 'fecha_nacimiento', 'edad'];
 
     public function incubadora()
     {

@@ -17,6 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('nombre', 100);
             $table->string('apellido', 100);
+            $table->string('sexo', 1);
+            $table->date('fecha_nacimiento');
+            $table->integer('edad');
             $table->unsignedBigInteger('id_estado')->default(1);
             $table->foreign('id_estado')->references('id')->on('estados');
             $table->unsignedBigInteger('id_incubadora');

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email', 100);
             $table->unsignedBigInteger('id_bebe');
             $table->foreign('id_bebe')->references('id')->on('bebes');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

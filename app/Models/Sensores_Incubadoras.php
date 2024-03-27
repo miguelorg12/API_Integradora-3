@@ -14,11 +14,11 @@ class Sensores_Incubadoras extends Model
 
     public function incubadora()
     {
-        return $this->belongsTo(Incubadora::class);
+        return $this->belongsToMany(Incubadora::class);
     }
 
     public function sensores()
     {
-        return $this->hasMany(Sensores::class);
+        return $this->belongsToMany(Sensores::class);
     }
 }
