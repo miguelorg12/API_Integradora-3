@@ -8,5 +8,5 @@ use App\Models\Mongo\Bebes;
 
 class MongoBebes extends Controller
 {
-    
+        
 }

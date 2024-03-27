@@ -8,5 +8,5 @@ use App\Models\Mongo\Sensores;
 
 class MongoSensores extends Controller
 {
-    //
+
 }
