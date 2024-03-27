@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Mongo;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Mongo\Values;
 
 class ValuesController extends Controller
 {
@@ -16,11 +15,10 @@ class ValuesController extends Controller
 
     public function store(Request $request)
     {
-        $value = new Values;
+        $value = new Values();
         $value->fill($request->all());
         $value->save();
-
-        return response()->json($value, 201);
+        return response()->json($value);
     }
 
     public function show($id)
@@ -34,7 +32,6 @@ class ValuesController extends Controller
         $value = Values::find($id);
         $value->fill($request->all());
         $value->save();
-
         return response()->json($value);
     }
 
@@ -42,7 +39,6 @@ class ValuesController extends Controller
     {
         $value = Values::find($id);
         $value->delete();
-
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Value deleted']);
     }
 }
