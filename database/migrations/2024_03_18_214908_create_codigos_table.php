@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('codigos', function (Blueprint $table) {
             $table->id();
             $table->string('codigo', 100);
-            $table->foreignId('user_id')->constrained('users');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

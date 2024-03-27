@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('last_name', 100);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('activated_at')->nullable();
             $table->string('password');
             $table->boolean('is_active')->default(false);
             $table->unsignedBigInteger('id_rol')->default(4);

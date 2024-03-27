@@ -9,7 +9,7 @@ class Hospital extends Model
 {
     use HasFactory;
     protected $table = 'hospitals';
-    protected $fillable = ['name', 'address', 'phone'];
+    protected $fillable = ['nombre', 'direccion', 'telenfono'];
     public function users()
     {
         return $this->hasMany(User::class);
