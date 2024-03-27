@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('sensores', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre', 100);
+            $table->string('unidad', 100);
             $table->timestamps();
         });
     }

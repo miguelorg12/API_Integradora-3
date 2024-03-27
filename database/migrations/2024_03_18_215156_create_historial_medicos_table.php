@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('historial_medicos', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_bebe');
+            $table->foreign('id_bebe')->references('id')->on('bebes');
+            $table->string('diagnostico', 255);
+            $table->string('medicamentos', 255);
             $table->timestamps();
         });
     }

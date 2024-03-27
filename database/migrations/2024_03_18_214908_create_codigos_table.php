@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('codigos', function (Blueprint $table) {
             $table->id();
             $table->string('codigo', 100);
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }

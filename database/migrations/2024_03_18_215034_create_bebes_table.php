@@ -15,6 +15,12 @@ return new class extends Migration
     {
         Schema::create('bebes', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre', 100);
+            $table->string('apellido', 100);
+            $table->unsignedBigInteger('id_estado')->default(1);
+            $table->foreign('id_estado')->references('id')->on('estados');
+            $table->unsignedBigInteger('id_incubadora');
+            $table->foreign('id_incubadora')->references('id')->on('incubadoras');
             $table->timestamps();
         });
     }

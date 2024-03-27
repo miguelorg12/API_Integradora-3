@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+
 class AuthController extends Controller
 {
 
@@ -22,7 +23,8 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:100',
             'email' => 'required|string|email',
             'password' => 'required|string|confirmed',
-            'confirm_password' => 'required|string|confirmed'
+            'confirm_password' => 'required|string|confirmed',
+            'id_hospital' => 'required|integer|exists:hospitals,id'
         ]);
 
         $user = new User();
@@ -30,6 +32,7 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->last_name = $request->last_name;
         $user->email = $request->email;
+        $user->id_hospital = $request->id_hospital;
         $user->password = Hash::make($request->password);
 
         $user->save();
@@ -43,7 +46,7 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth('api_jwt')->attempt($credentials)) {
+        if (!$token = auth('api_jwt')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

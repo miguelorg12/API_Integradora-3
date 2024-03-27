@@ -15,7 +15,11 @@ return new class extends Migration
     {
         Schema::create('incubadoras', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 100);
+            $table->unsignedBigInteger('id_hospital');
+            $table->foreign('id_hospital')->references('id')->on('hospitals');
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_occupied')->default(false);
+            $table->boolean('optimo')->default(true);
             $table->timestamps();
         });
     }
