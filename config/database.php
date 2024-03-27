@@ -98,6 +98,12 @@ return [
             'database' => env('DB_DATABASE'),
         ],
 
+        'mongodb' => [
+            'driver' => 'mongodb',
+            'dsn' => env('DB_URI', 'mongodb+srv://edsonalgarate:H6HaGTAOaVS56zme@cluster0.5qwdwi7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),
+            'database' => 'db_spotify',
+        ],
+
     ],
 
     /*
