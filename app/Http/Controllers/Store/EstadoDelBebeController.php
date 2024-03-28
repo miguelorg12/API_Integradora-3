@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Http\Controllers\Store;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Mongo\EstadoDelBebe as MongoEstadoDelBebe;
-use App\Http\Controllers\SQL\EstadoDelBebe as SQLEstadoDelBebe;
+use App\Http\Controllers\Mongo\MongoEstadoDelBebe as MongoEstadoDelBebe;
+use App\Http\Controllers\EstadoDelBebes as SQLEstadoDelBebe;
 
 class EstadoDelBebeCoordinator extends Controller
 {

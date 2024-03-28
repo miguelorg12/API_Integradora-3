@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Mongo\Sensores_Incubadoras as MongoSensores_Incubadoras;
-use App\Http\Controllers\SQL\Sensores_Incubadoras as SQLSensores_Incubadoras;
+use App\Http\Controllers\Mongo\MongoSensores_Incubadoras as MongoSensores_Incubadoras;
+use App\Http\Controllers\SQL\Sensors_Incubadoras as SQLSensores_Incubadoras;
 
 class Sensores_IncubadorasCoordinator extends Controller
 {

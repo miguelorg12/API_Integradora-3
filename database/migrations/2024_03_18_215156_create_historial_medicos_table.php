@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('id_bebe')->references('id')->on('bebes');
             $table->string('diagnostico', 255);
             $table->string('medicamentos', 255);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

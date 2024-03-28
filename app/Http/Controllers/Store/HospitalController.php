@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Mongo\Hospital as MongoHospital;
-use App\Http\Controllers\SQL\Hospitales\Hospitals as SQLHospital;
+use App\Http\Controllers\Mongo\MongoHospital as MongoHospital;
+use App\Http\Controllers\SQL\Hospitals as SQLHospital;
 
 class HospitalCoordinator extends Controller
 {

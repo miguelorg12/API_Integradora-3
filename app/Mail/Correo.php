@@ -32,7 +32,7 @@ class Correo extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Activa tu cuenta!!!',
+            subject: 'Activa tu cuenta',
         );
     }
 

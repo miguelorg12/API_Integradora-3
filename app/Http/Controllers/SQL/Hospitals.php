@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\SQL;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Hospital;
 
@@ -40,15 +41,13 @@ class Hospitals extends Controller
             'direccion' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'telefono' => 'required|string|min:10|max:10|regex:/^[0-9]*$/',
         ]);
-
-        $hospital = new Hospital();
+        $hospital = new Hospital;
         $hospital->nombre = $request->nombre;
         $hospital->direccion = $request->direccion;
         $hospital->telefono = $request->telefono;
         $hospital->save();
         return response()->json(['msg' => 'Hospital creado']);
     }
-
 
     public function update(Request $request, $id)
     {

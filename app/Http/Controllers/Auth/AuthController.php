@@ -10,7 +10,6 @@ use App\Mail\Succes;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Codigo;
-use GrahamCampbell\ResultType\Success;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Hash;
@@ -23,37 +22,13 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api_jwt', ['except' => ['register', 'activate', 'logCode', 'verifyCode', 'checkActive', 'verifyToken']]);
+        $this->middleware('auth:api_jwt', ['except' => ['hola', 'register', 'activate', 'logCode', 'verifyCode', 'checkActive', 'verifyToken']]);
     }
 
-    public function register(Request $request)
+    public function hola(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'last_name' => 'required|string|max:100',
-            'email' => 'required|string|email',
-            'password' => 'required|string|confirmed|min:8',
-            'confirm_password' => 'required|string|confirmed|min:8',
-            'id_hospital' => 'required|integer|exists:hospitals,id'
-        ]);
-
-        $user = new User();
-
-        $user->name = $request->name;
-        $user->last_name = $request->last_name;
-        $user->email = $request->email;
-        $user->id_hospital = $request->id_hospital;
-        $user->password = Hash::make($request->password);
-        $user->save();
-        $signed_route = URL::temporarySignedRoute(
-            'activate',
-            now()->addMinutes(30),
-            ['user' => $user->id]
-        );
-        Mail::to($user->email)->send(new Correo($signed_route));
-        return response()->json([
-            'message' => 'Usuario creado con éxito, revise su correo para activar la cuenta'
-        ], 201);
+        $name = $request->name;
+        return response()->json(['message' => 'Hola ' . $name]);
     }
 
     public function login()
@@ -95,6 +70,10 @@ class AuthController extends Controller
 
     public function logCode(Request $request)
     {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
@@ -105,10 +84,6 @@ class AuthController extends Controller
         $credentials = ['email' => $email, 'password' => $password];
         if (auth('api_jwt')->attempt($credentials)) {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
-        }
-        $user = User::where('email', $email)->first();
-        if (!$user) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
         }
         $code = rand(100000, 999999);
         $codigo = Codigo::where('id_usuario', $user->id)->first();
@@ -189,5 +164,32 @@ class AuthController extends Controller
         }
 
         return response()->json(['valid' => true, 'active' => $user->is_active, 'role' => $user->id_rol], 200);
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|string|email',
+            'password' => 'required|string|confirmed|min:8',
+            'confirm_password' => 'required|string|confirmed|min:8',
+        ]);
+        $user = new User();
+        $user->name = $request->name;
+        $user->last_name = $request->last_name;
+        $user->email = $request->email;
+        $user->id_hospital = 1;
+        $user->password = Hash::make($request->password);
+        $user->save();
+        $signed_route = URL::temporarySignedRoute(
+            'activate',
+            now()->addMinutes(30),
+            ['user' => $user->id]
+        );
+        Mail::to($request->email)->send(new Correo($signed_route));
+        return response()->json([
+            'message' => 'Usuario creado con éxito, revise su correo para activar la cuenta'
+        ], 201);
     }
 }

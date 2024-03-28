@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -101,5 +102,19 @@ class Usuario extends Controller
         $user->is_active = 0;
         $user->save();
         return response()->json(['msg' => 'Usuario eliminado']);
+    }
+
+    public function restPassword(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['msg' => 'Usuario no encontrado']);
+        }
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+            'confirm_password' => 'required|string|min:8|confirmed'
+        ]);
+        $user->password = Hash::make($request->password);
+        $user->save();
     }
 }

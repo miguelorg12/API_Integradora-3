@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Mongo\Incubadora as MongoIncubadora;
-use App\Http\Controllers\SQL\Hospitales\Incubadora as SQLIncubadora;
+use App\Http\Controllers\Mongo\MongoIncubadora as MongoIncubadora;
+use App\Http\Controllers\SQL\Incubadoras as SQLIncubadora;
 
 class IncubadoraCoordinator extends Controller
 {

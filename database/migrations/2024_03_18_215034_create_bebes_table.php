@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('fecha_nacimiento');
             $table->integer('edad');
             $table->unsignedBigInteger('id_estado')->default(1);
-            $table->foreign('id_estado')->references('id')->on('estados');
+            $table->foreign('id_estado')->references('id')->on('estado_del_bebes');
             $table->unsignedBigInteger('id_incubadora');
             $table->foreign('id_incubadora')->references('id')->on('incubadoras');
             $table->timestamps();
