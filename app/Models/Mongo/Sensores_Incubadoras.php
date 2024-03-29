@@ -6,7 +6,7 @@ use Jenssegers\Mongodb\Eloquent\Model;
 
 class Sensores_Incubadoras extends Model
 {
-   protected $conection = 'mongodb';
+    protected $connection = 'mongodb';
     protected $collection = 'sensores_incubadoras';
     protected $fillable = ['id_incubadora', 'id_sensor'];
 

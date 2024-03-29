@@ -10,7 +10,7 @@
 <body>
     <div class="container">
         <h1>Activación de cuenta exitosa</h1>
-        <p>Estimado(a) {{ $user->nombres }},</p>
+        <p>Estimado(a) {{ $user->name }} {{$user->last_name}},</p>
         <p>Su cuenta ha sido activada exitosamente. Ahora puede iniciar sesión y comenzar a utilizar nuestros servicios.</p>
         <p>Gracias por elegir nuestra plataforma.</p>
     </div>

@@ -4,10 +4,12 @@ namespace App\Models\Mongo;
 
 
 use Jenssegers\Mongodb\Eloquent\Model;
+use App\Models\HistorialMedico;
+use App\Models\ContactoFamiliar;
 
 class Bebes extends Model
 {
-    protected $conection = 'mongodb';
+    protected $connection = 'mongodb';
     protected $collection = 'bebes';
     protected $fillable = ['id_incubadora', 'id_estado', 'nombre', 'apellido'];
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HistorialMedico;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class HistorialMedicoBebes extends Controller
 {
@@ -56,12 +57,14 @@ class HistorialMedicoBebes extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'id_bebe' => 'required|integer|exists:bebes,id',
             'diagnostico' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'medicamentos' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
         ]);
-
+        if ($validator->fails()) {
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+        }
         $historialMedico = new HistorialMedico();
         $historialMedico->id_bebe = $request->id_bebe;
         $historialMedico->diagnostico = $request->diagnostico;
@@ -76,10 +79,13 @@ class HistorialMedicoBebes extends Controller
         if (!$historialMedico) {
             return response()->json(['msg' => 'HistorialMedico no encontrado']);
         }
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'diagnostico' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'medicamentos' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+        }
         $historialMedico->diagnostico = $request->diagnostico;
         $historialMedico->medicamentos = $request->medicamentos;
         $historialMedico->save();

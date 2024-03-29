@@ -9,7 +9,7 @@ use App\Models\Incubadora;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class Bebe extends Controller
+class Bebess extends Controller
 {
     public function __construct()
     {
@@ -27,7 +27,6 @@ class Bebe extends Controller
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
             ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
-            ->where('bebes.is_active', true)
             ->where('hospitals.id', $user->id_hospital)
             ->get();
         return response()->json(['Bebes' => $bebes]);
@@ -40,7 +39,6 @@ class Bebe extends Controller
             $bebes = DB::table('bebes')
                 ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
                 ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
-                ->where('bebes.is_active', true)
                 ->where('bebes.id_incubadora', $id_incubadora)
                 ->get();
         }
@@ -48,7 +46,6 @@ class Bebe extends Controller
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('hospitals', 'bebes.id_hospital', '=', 'hospitals.id')
             ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
-            ->where('bebes.is_active', true)
             ->where('bebes.id_incubadora', $id_incubadora)
             ->where('hospitals.id', 'incubadoras.id_hospital')
             ->get();
@@ -72,6 +69,7 @@ class Bebe extends Controller
             'sexo' => 'required|in:M,F|min:1|max:1|regex:/^[a-zA-Z ]*$/',
             'fecha_nacimiento' => 'required|date',
             'edad' => 'required|integer',
+            'peso' => 'required|numeric',
             'id_estado' => 'required|integer',
             'id_incubadora' => 'required|integer',
         ]);
@@ -84,6 +82,7 @@ class Bebe extends Controller
         $bebe->sexo = $request->sexo;
         $bebe->fecha_nacimiento = $request->fecha_nacimiento;
         $bebe->edad = $request->edad;
+        $bebe->peso = $request->peso;
         $bebe->id_estado = $request->id_estado;
         $bebe->id_incubadora = $request->id_incubadora;
         $bebe->save();
@@ -102,6 +101,7 @@ class Bebe extends Controller
             'sexo' => 'required|in:M,F|min:1|max:1|regex:/^[a-zA-Z ]*$/',
             'fecha_nacimiento' => 'required|date',
             'edad' => 'required|integer',
+            'peso' => 'required|numeric',
             'id_estado' => 'required|integer|exists:estados_del_bebes,id',
             'id_incubadora' => 'required|integer|exists:incubadoras,id',
         ]);
@@ -110,22 +110,26 @@ class Bebe extends Controller
         $bebe->sexo = $request->sexo;
         $bebe->fecha_nacimiento = $request->fecha_nacimiento;
         $bebe->edad = $request->edad;
+        $bebe->peso = $request->peso;
         $bebe->id_estado = $request->id_estado;
         $bebe->id_incubadora = $request->id_incubadora;
         $bebe->save();
         return response()->json(['msg' => 'Bebe actualizado']);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $bebe = Bebes::where('id', $id)->first();
         if (!$bebe) {
             return response()->json(['msg' => 'Bebe no encontrado']);
         }
+        $validator = Validator::make($request->all(), [
+            'id_estado' => 'required|integer|exists:estados_del_bebes,id',
+        ]);
         $incubadora = Incubadora::where('id', $bebe->id_incubadora)->first();
         $incubadora->is_occupied = false;
-        $bebe->id_estado = 2;
+        $bebe->id_estado = $request->id_estado;
         $bebe->save();
-        return response()->json(['msg' => 'Bebe dado de alta']);
+        return response()->json(['msg' => 'Bebe Eliminado']);
     }
 }

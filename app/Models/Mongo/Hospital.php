@@ -3,12 +3,13 @@
 namespace App\Models\Mongo;
 
 use Jenssegers\Mongodb\Eloquent\Model;
+use App\Models\User;
 
 class Hospital extends Model
 {
-    protected $conection = 'mongodb';
+    protected $connection = 'mongodb';
     protected $collection = 'hospitals';
-    protected $fillable = ['name', 'address', 'phone'];
+    protected $fillable = ['nombre', 'direccion', 'telefono'];
 
     public function users()
     {

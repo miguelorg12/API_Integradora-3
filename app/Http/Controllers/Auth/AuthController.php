@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Hash;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 
 
 class AuthController extends Controller
@@ -24,13 +24,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api_jwt', ['except' => ['hola', 'register', 'activate', 'logCode', 'verifyCode', 'checkActive', 'verifyToken']]);
-    }
-
-    public function hola(Request $request)
-    {
-        $name = $request->name;
-        return response()->json(['message' => 'Hola ' . $name]);
+        $this->middleware('auth:api_jwt', ['except' => ['register', 'activate', 'logCode', 'verifyCode', 'checkActive', 'verifyToken']]);
     }
 
     public function login()
@@ -58,7 +52,7 @@ class AuthController extends Controller
 
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(Auth::refresh());
     }
 
     protected function respondWithToken($token)
@@ -66,35 +60,36 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth('api_jwt')->factory()->getTTL() * 60
         ]);
     }
 
     public function logCode(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
-        }
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
         $email = $request->email;
         $password = $request->password;
+        $user = User::where('email', $email)->first();
         $credentials = ['email' => $email, 'password' => $password];
-        if (auth('api_jwt')->attempt($credentials)) {
+        if (!Auth::guard('api_jwt')->attempt($credentials)) {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
         $code = rand(100000, 999999);
-        $codigo = Codigo::where('id_usuario', $user->id)->first();
+        $codigo = Codigo::where('user_id', $user->id)->first();
         if ($codigo) {
-            $codigo->codigo = $code;
+            $codigo->codigo = Hash::make($code);
             $codigo->save();
         } else {
             $codigo = new Codigo();
-            $codigo->id_usuario = $user->id;
+            $codigo->user_id = $user->id;
             $codigo->codigo = Hash::make($code);
             $codigo->save();
         }
@@ -107,17 +102,21 @@ class AuthController extends Controller
         $user->is_active = 1;
         $user->activated_at = now();
         $user->save();
-        Mail::to($user->email)->send(new Succes($user));
-        return view('Succesfull.succes')->with('user', $user);
+        Mail::to($user->email)->send(new Succes($user->name));
+        return view('Successfull.success')->with('user', $user);
     }
 
     public function verifyCode(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string|min:8',
-            'code' => 'required|string|min:6|max:6|regex:/^[0-9]*$/',
+            'codigo' => 'required|integer',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
 
         $correo = $request->email;
         $contraseña = $request->password;
@@ -127,9 +126,9 @@ class AuthController extends Controller
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
 
-        $codigo = Codigo::where('id_usuario', $user->id)->first();
+        $codigo = Codigo::where('user_id', $user->id)->first();
         if (!$codigo || !Hash::check($code, $codigo->codigo)) {
-            return response()->json(['message' => 'Código incorrecto'], 400);
+            return response()->json(['message' => 'Código incorrecto', $code], 400);
         }
         $credentials = ['email' => $correo, 'password' => $contraseña];
         if (!$token = Auth::guard('api_jwt')->attempt($credentials)) {
@@ -171,8 +170,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'name' => 'required|string|max:100|min:3|regex:/^[a-zA-Z ]*$/',
+            'last_name' => 'required|string|max:100|min:3|regex:/^[a-zA-Z ]*$/',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);

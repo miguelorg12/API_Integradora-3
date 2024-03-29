@@ -94,14 +94,8 @@ return [
         ],
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb+srv://miguelvillalpando19:<password>@cluster0.darur22.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),
-            'database' => env('DB_DATABASE'),
-        ],
-
-        'mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb+srv://edsonalgarate:H6HaGTAOaVS56zme@cluster0.5qwdwi7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),
-            'database' => 'db_spotify',
+            'dsn' => env('DB_URI', 'mongodb+srv://kevin07:Burciaga07@myatlasclusteredu.n94pwul.mongodb.net/'),
+            'database' => 'DB_Integradora3',
         ],
 
     ],
@@ -136,7 +130,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [

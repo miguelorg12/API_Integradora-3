@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SQL;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Hospital;
+use Illuminate\Support\Facades\Validator;
 
 class Hospitals extends Controller
 {
@@ -20,14 +21,16 @@ class Hospitals extends Controller
         if ($user->id_rol == 1) {
             $hospitals = Hospital::all();
             return response()->json(['msg' => 'Hospitales', 'data' => $hospitals]);
+        } else {
+
+            $hospitals = Hospital::where('id', $user->id_hospital)->where('is_active', true)->get();
         }
-        $hospitals = Hospital::where('id', $user->id_hospital)->where('is_active', true)->get();
         return response()->json(['Hospitales' => $hospitals]);
     }
 
     public function show(Request $request)
     {
-        $hospital = Hospital::where($request->id)->first();
+        $hospital = Hospital::where('id', $request->id)->first();
         if (!$hospital) {
             return response()->json(['msg' => 'Hospital no encontrado']);
         }
@@ -36,11 +39,14 @@ class Hospitals extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'direccion' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'telefono' => 'required|string|min:10|max:10|regex:/^[0-9]*$/',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+        }
         $hospital = new Hospital;
         $hospital->nombre = $request->nombre;
         $hospital->direccion = $request->direccion;
@@ -55,11 +61,14 @@ class Hospitals extends Controller
         if (!$hospital) {
             return response()->json(['msg' => 'Hospital no encontrado']);
         }
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'direccion' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'telefono' => 'required|string|min:10|max:10|regex:/^[0-9]*$/',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+        }
         $hospital->nombre = $request->nombre;
         $hospital->direccion = $request->direccion;
         $hospital->telefono = $request->telefono;

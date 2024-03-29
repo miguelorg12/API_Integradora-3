@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamp('activated_at')->nullable();
             $table->string('password');
             $table->boolean('is_active')->default(false);
-            $table->unsignedBigInteger('id_rol')->default(4);
+            $table->unsignedBigInteger('id_rol')->default(5);
             $table->foreign('id_rol')->references('id')->on('rols');
             $table->unsignedBigInteger('id_hospital')->nullable();
             $table->foreign('id_hospital')->references('id')->on('hospitals');

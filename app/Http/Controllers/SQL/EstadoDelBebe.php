@@ -18,12 +18,13 @@ class EstadoDelBebes extends Controller
         if ($user->id_rol == 1) {
             $estadoDelBebe = EstadoDelBebe::all();
             return response()->json(['msg' => 'EstadoDelBebe', 'data' => $estadoDelBebe]);
+        } else {
+            $estadoDelBebe = EstadoDelBebe::where('is_active', true)->get();
         }
-        $estadoDelBebe = EstadoDelBebe::where('is_active', true)->get();
         return response()->json(['msg' => 'EstadoDelBebe', 'data' => $estadoDelBebe]);
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $user = auth()->user();
         if ($user->id_rol == 1) {
@@ -32,8 +33,9 @@ class EstadoDelBebes extends Controller
                 return response()->json(['msg' => 'EstadoDelBebe no encontrado']);
             }
             return response()->json(['msg' => 'EstadoDelBebe', 'data' => $estadoDelBebe]);
+        } else {
+            $estadoDelBebe = EstadoDelBebe::where('id', $id)->where('is_active', true)->first();
         }
-        $estadoDelBebe = EstadoDelBebe::where('id', $id)->where('is_active', true)->first();
         if (!$estadoDelBebe) {
             return response()->json(['msg' => 'EstadoDelBebe no encontrado']);
         }
@@ -69,8 +71,9 @@ class EstadoDelBebes extends Controller
             $estadoDelBebe->estado = $request->estado;
             $estadoDelBebe->save();
             return response()->json(['msg' => 'EstadoDelBebe actualizado']);
+        } else {
+            $estadoDelBebe = EstadoDelBebe::where('id', $id)->where('is_active', true)->first();
         }
-        $estadoDelBebe = EstadoDelBebe::where('id', $id)->where('is_active', true)->first();
         if (!$estadoDelBebe) {
             return response()->json(['msg' => 'EstadoDelBebe no encontrado']);
         }

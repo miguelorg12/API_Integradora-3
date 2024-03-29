@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre', 100);
             $table->string('unidad', 100);
+            $table->string('folio', 100)->unique();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

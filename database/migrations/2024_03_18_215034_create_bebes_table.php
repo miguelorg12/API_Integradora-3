@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('sexo', 1);
             $table->date('fecha_nacimiento');
             $table->integer('edad');
+            $table->float('peso');
             $table->unsignedBigInteger('id_estado')->default(1);
             $table->foreign('id_estado')->references('id')->on('estado_del_bebes');
             $table->unsignedBigInteger('id_incubadora');

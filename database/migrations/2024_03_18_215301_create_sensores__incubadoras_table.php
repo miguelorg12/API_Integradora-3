@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('id_incubadora')->references('id')->on('incubadoras');
             $table->unsignedBigInteger('id_sensor');
             $table->foreign('id_sensor')->references('id')->on('sensores');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
