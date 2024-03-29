@@ -22,13 +22,13 @@ class Incubadoras extends Controller
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
                 ->join('bebes', 'bebes.id_incubadora', '=', 'incubadoras.id')
-                ->select('incubadoras.*', 'hospitals.id', 'hospitals.nombre as hospital', 'bebes.id as id_bebe', 'bebes.nombre as nombre', 'bebes.apellido as apellido', 'bebes.fecha_nacimiento as fecha_nacimiento', 'bebes.sexo as sexo', 'bebes.id_estado')
+                ->select('incubadoras.*', 'hospitals.id', 'hospitals.nombre as hospital', 'bebes.id as id_bebe', 'bebes.nombre as nombre', 'bebes.apellido as apellido', 'bebes.fecha_nacimiento as fecha_nacimiento', 'bebes.sexo as sexo', 'bebes.id_estado', 'bebes.peso as peso')
                 ->get();
         } else {
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
                 ->join('bebes', 'bebes.id_incubadora', '=', 'incubadoras.id')
-                ->select('incubadoras.*', 'hospitals.id', 'hospitals.nombre as hospital', 'bebes.id as id_bebe', 'bebes.nombre as bebe')
+                ->select('incubadoras.*', 'hospitals.id', 'hospitals.nombre as hospital', 'bebes.id as id_bebe', 'bebes.nombre as nombre', 'bebes.apellido as apellido', 'bebes.fecha_nacimiento as fecha_nacimiento', 'bebes.sexo as sexo', 'bebes.id_estado', 'bebes.peso as peso')
                 ->where('hospitals.id', $user->id_hospital)
                 ->where('incubadoras.is_active', true)
                 ->get();

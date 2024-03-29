@@ -11,7 +11,7 @@ class Usuario extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api_jwt');
+        $this->middleware('auth:api_jwt', ['except' => ['recoveryPassword', 'resetPassword']]);
     }
 
     public function index()
@@ -128,22 +128,5 @@ class Usuario extends Controller
         $user->is_active = 0;
         $user->save();
         return response()->json(['msg' => 'Usuario eliminado']);
-    }
-
-    public function restPassword(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return response()->json(['msg' => 'Usuario no encontrado']);
-        }
-        $validator = Validator::make($request->all(), [
-            'password' => 'required|string|min:8|confirmed',
-            'confirm_password' => 'required|string|min:8|confirmed'
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
-        }
-        $user->password = Hash::make($request->password);
-        $user->save();
     }
 }

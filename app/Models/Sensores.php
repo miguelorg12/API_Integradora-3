@@ -9,7 +9,7 @@ class Sensores extends Model
 {
     use HasFactory;
     protected $table = 'sensores';
-    protected $fillable = ['nombre', 'unidad'];
+    protected $fillable = ['nombre', 'unidad', 'folio'];
 
     public function sensores_incubadoras()
     {

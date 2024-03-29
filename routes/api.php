@@ -6,13 +6,12 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Usuario;
 use App\Http\Controllers\Roles;
 use App\Http\Controllers\SQL\Bebess;
-use App\Http\Controllers\SQL\ContactoFamiliars;
+use App\Http\Controllers\SQL\ContactoFamiliares;
 use App\Http\Controllers\SQL\HistorialMedicoBebes;
-use App\Http\Controllers\SQL\Sensors;
-use App\Http\Controllers\EstadoDelBebes;
-use App\Http\Controllers\SQL\Sensors_Incubadoras;
+use App\Http\Controllers\SQL\Sensoress;
+use App\Http\Controllers\SQL\EstadoBebe;
+use App\Http\Controllers\SQL\SensoresIncubadorass;
 use App\Http\Controllers\SQL\Incubadoras;
-use App\Http\Controllers\Store\HospitalCoordinator;
 use App\Http\Controllers\HospitalHibrido;
 use App\Http\Controllers\BebesHibrido;
 use App\Http\Controllers\EstadoBebeHibrido;
@@ -20,11 +19,6 @@ use App\Http\Controllers\IncubadorasHibrido;
 use App\Http\Controllers\SensoresHibrido;
 use App\Http\Controllers\SensoresIncubadorasHibrido;
 use App\Http\Controllers\SQL\Hospitals;
-use App\Http\Controllers\Store\BebesCoordinator;
-use App\Http\Controllers\Store\EstadoDelBebeCoordinator;
-use App\Http\Controllers\Store\IncubadoraCoordinator;
-use App\Http\Controllers\Store\Sensores_IncubadorasCoordinator;
-use App\Http\Controllers\Store\SensoresCoordinator;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +48,8 @@ Route::prefix('auth')->group(function ($router) {
     Route::get('checkActive/{user}', [AuthController::class, 'checkActive'])
         ->name('checkActive');
     Route::post('verifyToken', [AuthController::class, 'verifyToken'])->middleware('active');
+    Route::post('restablecer', [AuthController::class, 'restablecer']);
+    Route::get('recoveryPassword/{user}', [AuthController::class, 'recoveryPassword'])->name('recoveryPassword');
 });
 
 //Rutas Usuarios
@@ -105,17 +101,17 @@ Route::prefix('bebes')->group(function ($router) {
 
 //Rutas ContactoFamiliar
 Route::prefix('contactoFamiliar')->group(function ($router) {
-    Route::get('/list', [ContactoFamiliars::class, 'index']);
-    Route::get('/oneContactoFamiliar/{id}', [ContactoFamiliars::class, 'show'])->where('id', '[0-9]+');
-    Route::post('/create', [ContactoFamiliars::class, 'store']);
-    Route::put('/update/{id}', [ContactoFamiliars::class, 'update'])->where('id', '[0-9]+');
-    Route::delete('/delete/{id}', [ContactoFamiliars::class, 'destroy'])->where('id', '[0-9]+');
+    Route::get('/list', [ContactoFamiliares::class, 'index']);
+    Route::get('/oneContactoFamiliar/{id}', [ContactoFamiliares::class, 'show'])->where('id', '[0-9]+');
+    Route::post('/create', [ContactoFamiliares::class, 'store']);
+    Route::put('/update/{id}', [ContactoFamiliares::class, 'update'])->where('id', '[0-9]+');
+    Route::delete('/delete/{id}', [ContactoFamiliares::class, 'destroy'])->where('id', '[0-9]+');
 });
 
 //Rutas HistorialMedicoBebe
 Route::prefix('historial')->group(function ($router) {
     Route::get('/list', [HistorialMedicoBebes::class, 'index']);
-    Route::get('/oneHistorialMedicoBebe/{id}', [HistorialMedicoBebes::class, 'show'])->where('id', '[0-9]+');
+    Route::get('/oneHistorial/{id}', [HistorialMedicoBebes::class, 'show'])->where('id', '[0-9]+');
     Route::post('/create', [HistorialMedicoBebes::class, 'store']);
     Route::put('/update/{id}', [HistorialMedicoBebes::class, 'update'])->where('id', '[0-9]+');
     Route::delete('/delete/{id}', [HistorialMedicoBebes::class, 'destroy'])->where('id', '[0-9]+');
@@ -123,27 +119,27 @@ Route::prefix('historial')->group(function ($router) {
 
 //Rutas EstadoDelBebe
 Route::prefix('estadoDelBebe')->group(function ($router) {
-    Route::get('/list', [EstadoDelBebes::class, 'index']);
-    Route::get('/oneEstadoDelBebe/{id}', [EstadoDelBebes::class, 'show'])->where('id', '[0-9]+');
+    Route::get('/list', [EstadoBebe::class, 'index']);
+    Route::get('/oneEstadoDelBebe/{id}', [EstadoBebe::class, 'show'])->where('id', '[0-9]+');
     Route::post('/create', [EstadoBebeHibrido::class, 'store']);
-    Route::put('/update/{id}', [EstadoDelBebes::class, 'update'])->where('id', '[0-9]+');
-    Route::delete('/delete/{id}', [EstadoDelBebes::class, 'destroy'])->where('id', '[0-9]+');
+    Route::put('/update/{id}', [EstadoBebe::class, 'update'])->where('id', '[0-9]+');
+    Route::delete('/delete/{id}', [EstadoBebe::class, 'destroy'])->where('id', '[0-9]+');
 });
 
 //Rutas Sensores
 Route::prefix('sensores')->group(function ($router) {
-    Route::get('/list', [Sensors::class, 'index']);
-    Route::get('/oneSensor/{id}', [Sensors::class, 'show'])->where('id', '[0-9]+');
+    Route::get('/list', [Sensoress::class, 'index']);
+    Route::get('/oneSensor/{id}', [Sensoress::class, 'show'])->where('id', '[0-9]+');
     Route::post('/create', [SensoresHibrido::class, 'store']);
-    Route::put('/update/{id}', [Sensors::class, 'update'])->where('id', '[0-9]+');
-    Route::delete('/delete/{id}', [Sensors::class, 'destroy'])->where('id', '[0-9]+');
+    Route::put('/update/{id}', [Sensoress::class, 'update'])->where('id', '[0-9]+');
+    Route::delete('/delete/{id}', [Sensoress::class, 'destroy'])->where('id', '[0-9]+');
 });
 
 //Rutas Sensores_Incubadoras
 Route::prefix('sensoresIncubadoras')->group(function ($router) {
-    Route::get('/list', [Sensors_Incubadoras::class, 'index']);
-    Route::get('/oneSensorIncubadora/{id}', [Sensors_Incubadoras::class, 'show'])->where('id', '[0-9]+');
+    Route::get('/list', [SensoresIncubadorass::class, 'index']);
+    Route::get('/oneSensorIncubadora/{id}', [SensoresIncubadorass::class, 'show'])->where('id', '[0-9]+');
     Route::post('/create', [SensoresIncubadorasHibrido::class, 'store']);
-    Route::put('/update/{id}', [Sensors_Incubadoras::class, 'update'])->where('id', '[0-9]+');
-    Route::delete('/delete/{id}', [Sensors_Incubadoras::class, 'destroy'])->where('id', '[0-9]+');
+    Route::put('/update/{id}', [SensoresIncubadorass::class, 'update'])->where('id', '[0-9]+');
+    Route::delete('/delete/{id}', [SensoresIncubadorass::class, 'destroy'])->where('id', '[0-9]+');
 });

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Mongo\MongoEstadoDelBebe as MongoEstadoDelBebe;
-use App\Http\Controllers\EstadoDelBebes as SQLEstadoDelBebe;
+use App\Http\Controllers\SQL\EstadoBebe as SQLEstadoDelBebe;
 
 class EstadoBebeHibrido extends Controller
 {

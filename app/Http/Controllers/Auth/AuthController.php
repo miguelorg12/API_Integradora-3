@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Mail\Code;
 use App\Mail\Correo;
 use App\Mail\Succes;
+use App\Mail\ResetPassword;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Codigo;
@@ -24,7 +25,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api_jwt', ['except' => ['register', 'activate', 'logCode', 'verifyCode', 'checkActive', 'verifyToken']]);
+        $this->middleware('auth:api_jwt', ['except' => ['register', 'activate', 'logCode', 'verifyCode', 'checkActive', 'verifyToken', 'restablecer', 'recoveryPassword', 'resetPassword']]);
     }
 
     public function login()
@@ -194,5 +195,53 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Usuario creado con éxito, revise su correo para activar la cuenta'
         ], 201);
+    }
+
+    public function restablecer(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['msg' => 'Usuario no encontrado'], 404);
+        }
+
+        $resetUrl = URL::temporarySignedRoute(
+            'recoveryPassword',
+            now()->addMinutes(30),
+            ['user' => $user->id]
+        );
+        Mail::to($request->email)->send(new ResetPassword($resetUrl));
+
+        return response()->json(['msg' => 'Correo enviado', $user], 200);
+    }
+    public function recoveryPassword(User $user)
+    {
+        $user = User::where('id', $user->id)->first();
+        if (!$user) {
+            return response()->json(['msg' => 'Usuario no encontrado'], 404);
+        }
+        $email = $user->email;
+
+        return view('restPassword')->with('email', $email);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'Usuario no encontrado'])->withInput();
+        }
+
+        $request->validate([
+            'password' => 'required|string|min:8',
+            'confirm_password' => 'required|string|min:8'
+        ]);
+
+        if ($request->password != $request->confirm_password) {
+            return back()->withErrors(['password' => 'Las contraseñas no coinciden'])->withInput();
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+        return redirect('restPassword')->with('success', 'Contraseña restablecida correctamente');
     }
 }

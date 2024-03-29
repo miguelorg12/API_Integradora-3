@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\SQL;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Mongo\EstadoDelBebe;
+use App\Models\EstadoDelBebe;
 use Illuminate\Support\Facades\Validator;
 
-class EstadoDelBebes extends Controller
+class EstadoBebe extends Controller
 {
     public function __construct()
     {
@@ -15,7 +16,7 @@ class EstadoDelBebes extends Controller
 
     public function index()
     {
-        $user = auth()->user();
+        $user = auth('api_jwt')->user();
         if ($user->id_rol == 1) {
             $estadoDelBebe = EstadoDelBebe::all();
             return response()->json(['msg' => 'EstadoDelBebe', 'data' => $estadoDelBebe]);
