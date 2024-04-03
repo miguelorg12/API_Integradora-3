@@ -94,10 +94,9 @@
                         </div>
                         @endif
 
-                        <form method="POST" action="{{ route('password') }}">
+                        <form action="{{ route('password') }}" method="post">
                             @csrf
                             <div class="form-group">
-                                <label for="email">Correo electrónico {{$email}}</label>
                                 <input type="email" name="email" value="{{ $email }}">
                             </div>
 

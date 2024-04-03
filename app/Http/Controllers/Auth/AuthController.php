@@ -103,7 +103,7 @@ class AuthController extends Controller
         $user->is_active = 1;
         $user->activated_at = now();
         $user->save();
-        Mail::to($user->email)->send(new Succes($user->name));
+        Mail::to($user->email)->send(new Succes($user));
         return view('Successfull.success')->with('user', $user);
     }
 
@@ -184,10 +184,9 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->last_name = $request->last_name;
         $user->email = $request->email;
-        if($request->id_hospital != null && $request->id_hospital != 0) {
+        if ($request->id_hospital != null && $request->id_hospital != 0) {
             $user->id_hospital = $request->id_hospital;
-        }
-        else{
+        } else {
             $user->id_hospital = 1;
         }
         $user->password = Hash::make($request->password);

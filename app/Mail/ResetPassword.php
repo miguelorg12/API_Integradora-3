@@ -16,7 +16,7 @@ class ResetPassword extends Mailable
 
     /**
      * Create a new message instance.
-     *
+     * 
      * @return void
      */
     public function __construct($signedUrl)
@@ -26,7 +26,7 @@ class ResetPassword extends Mailable
 
     public function build()
     {
-        return $this->subject('Restablecer contraseña')
+        return $this->subject('Restablecer tu contraseña')
             ->view('emails.reset_password');
     }
 
