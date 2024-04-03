@@ -175,6 +175,7 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:100|min:3|regex:/^[a-zA-Z ]*$/',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
+            'confirm_password' => 'required|string|min:8|same:password'
         ]);
         if ($validator->fails()) {
             return response()->json(["Errors" => $validator->errors()], 400);
@@ -183,7 +184,12 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->last_name = $request->last_name;
         $user->email = $request->email;
-        $user->id_hospital = 1;
+        if($request->id_hospital != null && $request->id_hospital != 0) {
+            $user->id_hospital = $request->id_hospital;
+        }
+        else{
+            $user->id_hospital = 1;
+        }
         $user->password = Hash::make($request->password);
         $user->save();
         $signed_route = URL::temporarySignedRoute(
@@ -193,7 +199,8 @@ class AuthController extends Controller
         );
         Mail::to($request->email)->send(new Correo($signed_route));
         return response()->json([
-            'message' => 'Usuario creado con éxito, revise su correo para activar la cuenta'
+            'message' => 'Usuario creado con éxito, revise su correo para activar la cuenta',
+            'id' => $user->id
         ], 201);
     }
 

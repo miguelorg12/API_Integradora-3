@@ -73,6 +73,7 @@ Route::prefix('roles')->group(function ($router) {
 //Rutas Hospitales
 Route::prefix('hospital')->group(function ($router) {
     Route::get('/list', [Hospitals::class, 'index']);
+    Route::get('/listNtoken', [Hospitals::class, 'hospitals']);
     Route::get('/oneHospital/{id}', [Hospitals::class, 'show'])->where('id', '[0-9]+');
     Route::post('/create', [HospitalHibrido::class, 'store']);
     Route::put('/update/{id}', [Hospitals::class, 'update'])->where('id', '[0-9]+');

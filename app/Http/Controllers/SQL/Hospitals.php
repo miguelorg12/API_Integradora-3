@@ -11,7 +11,7 @@ class Hospitals extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api_jwt');
+        $this->middleware('auth:api_jwt', ['except' => ['hospitals']]);
     }
 
     public function index()
@@ -22,9 +22,16 @@ class Hospitals extends Controller
             $hospitals = Hospital::all();
             return response()->json(['msg' => 'Hospitales', 'data' => $hospitals]);
         } else {
-
             $hospitals = Hospital::where('id', $user->id_hospital)->where('is_active', true)->get();
         }
+        return response()->json(['Hospitales' => $hospitals]);
+    }
+
+    public function hospitals()
+    {
+        $hospitals = Hospital::where('is_active', true)
+        ->where('nombre', '!=', 'Hospital General')
+        ->get();
         return response()->json(['Hospitales' => $hospitals]);
     }
 
