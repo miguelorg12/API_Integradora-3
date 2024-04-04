@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\testWebsocket;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +26,11 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api_jwt', ['except' => ['register', 'activate', 'logCode', 'verifyCode', 'checkActive', 'verifyToken', 'restablecer', 'recoveryPassword', 'resetPassword']]);
+        $this->middleware('auth:api_jwt', ['except' => [
+            'register',
+            'activate', 'logCode', 'verifyCode', 'checkActive', 'verifyToken', 'restablecer',
+            'recoveryPassword', 'resetPassword', 'test'
+        ]]);
     }
 
     public function login()
@@ -61,7 +66,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api_jwt')->factory()->getTTL() * 60
+            'expires_in' => auth('api_jwt')->factory()->getTTL() * (60 * 24)
         ]);
     }
 
@@ -249,5 +254,10 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
         return redirect('restPassword')->with('success', 'Contraseña restablecida correctamente');
+    }
+
+    public function test()
+    {
+        event(new testWebsocket);
     }
 }
