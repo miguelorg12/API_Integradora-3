@@ -20,9 +20,9 @@ class Hospitals extends Controller
 
         if ($user->id_rol == 1) {
             $hospitals = Hospital::all();
-            return response()->json(['msg' => 'Hospitales', 'data' => $hospitals]);
+            return response()->json(['Hospitales' => $hospitals]);
         } else {
-            $hospitals = Hospital::where('id', $user->id_hospital)->where('is_active', true)->get();
+            $hospitals = Hospital::all();
         }
         return response()->json(['Hospitales' => $hospitals]);
     }
@@ -52,7 +52,7 @@ class Hospitals extends Controller
             'telefono' => 'required|string|min:10|max:10|regex:/^[0-9]*$/',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $hospital = new Hospital;
         $hospital->nombre = $request->nombre;
@@ -70,11 +70,11 @@ class Hospitals extends Controller
         }
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
-            'direccion' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
+            'direccion' => 'required|string|min:3|max:100',
             'telefono' => 'required|string|min:10|max:10|regex:/^[0-9]*$/',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $hospital->nombre = $request->nombre;
         $hospital->direccion = $request->direccion;

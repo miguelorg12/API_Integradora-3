@@ -19,10 +19,21 @@ class Usuario extends Controller
         $usuario = auth()->user();
 
         if ($usuario->id_rol == 1) {
-            $users = User::all();
+            $users = User::join('rols', 'users.id_rol', '=', 'rols.id')
+            ->join('hospitals', 'users.id_hospital', '=', 'hospitals.id')
+            ->orderBy('users.id', 'asc')
+            ->select('users.id', 'users.name', 'users.last_name', 'users.email','users.is_active', 'rols.nombre as rol', 'hospitals.nombre as hospital')
+            ->where('users.is_active', true)
+            ->get();
             return response()->json(['msg' => 'Usuarios', 'data' => $users]);
         } else if ($usuario->id_rol == 2) {
-            $users = User::where('id_hospital', $usuario->id_hospital)->where('is_active', true)->get();
+            $users = User::where('id_hospital', $usuario->id_hospital)
+            ->join('rols', 'users.id_rol', '=', 'rols.id')
+            ->join('hospitals', 'users.id_hospital', '=', 'hospitals.id')
+            ->select('users.id', 'users.name', 'users.last_name', 'users.email','users.is_active', 'rols.nombre as rol', 'hospitals.nombre as hospital')
+            ->where('rols.id', '!=', 1)
+            ->where('users.is_active', true)
+            ->get();
             return response()->json(['msg' => 'Usuarios', 'data' => $users]);
         }
     }
@@ -48,29 +59,33 @@ class Usuario extends Controller
 
     public function store(Request $request)
     {
+        $user = auth()->user();
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8',
+            'confirm_password' => 'required|string|min:8|same:password',
+            'id_rol' => 'required|integer'
+
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $usuario = new User();
         $usuario->name = $request->name;
         $usuario->last_name = $request->last_name;
         $usuario->email = $request->email;
         $usuario->password = Hash::make($request->password);
-        $usuario->id_rol = 5;
-        $usuario->id_hospital = 1;
+        $usuario->id_rol = $request->id_rol;
+        $usuario->id_hospital = $user->id_hospital;
         $usuario->is_active = true;
         $usuario->activated_at = now();
         $usuario->save();
         return response()->json(['msg' => 'Usuario creado']);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $usuario = auth()->user();
 
@@ -82,7 +97,7 @@ class Usuario extends Controller
                 return response()->json(['msg' => 'Usuario no encontrado']);
             }
         } else {
-            $user = User::where($request->id)->where('is_active', 1)->first();
+            $user = User::where('id', $id)->where('is_active', 1)->first();
             if (!$user) {
                 return response()->json(['msg' => 'Usuario no encontrado']);
             }
@@ -112,10 +127,15 @@ class Usuario extends Controller
             if ($validator->fails()) {
                 return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
             }
+            
             $user->name = $request->name;
             $user->last_name = $request->last_name;
+            if ($request->id_hospital != null && $request->id_hospital != 0) {
+                $user->id_rol = 5;
+                $user->id_hospital = $request->id_hospital;
+            }
             $user->save();
-            return response()->json(['msg' => 'Usuario actualizado']);
+            return response()->json(['msg' => 'Usuario actualizado', 'rol' => $user->id_rol, 'name' => $user->name, 'last_name' => $user->last_name, 'id_hospital' => $user->id_hospital]);
         }
     }
 
