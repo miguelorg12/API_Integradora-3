@@ -20,13 +20,19 @@ class Bebess extends Controller
     {
         $user = auth()->user();
         if ($user->id_rol == 1) {
-            $bebes = Bebes::all();
+            $bebes = DB::table('bebes')
+                ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
+                ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
+                ->join('estado_del_bebes', 'bebes.id_estado', '=', 'estado_del_bebes.id')
+                ->select('bebes.*', 'estado_del_bebes.estado', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+                ->get();
             return response()->json(['msg' => 'Bebes', 'data' => $bebes]);
         }
         $bebes = DB::table('bebes')
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
-            ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+            ->join('estados_del_bebes', 'bebes.id_estado', '=', 'estados_del_bebes.id')
+            ->select('bebes.*', 'estado_del_bebes.estado','incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
             ->where('hospitals.id', $user->id_hospital)
             ->get();
         return response()->json(['Bebes' => $bebes]);
@@ -128,7 +134,7 @@ class Bebess extends Controller
         ]);
         $incubadora = Incubadora::where('id', $bebe->id_incubadora)->first();
         $incubadora->is_occupied = false;
-        $bebe->id_estado = $request->id_estado;
+        $bebe->id_estado = 2;
         $bebe->save();
         return response()->json(['msg' => 'Bebe Eliminado']);
     }

@@ -125,7 +125,7 @@ class Usuario extends Controller
                 'last_name' => 'required|string|max:100',
             ]);
             if ($validator->fails()) {
-                return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+                return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
             }
             
             $user->name = $request->name;

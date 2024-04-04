@@ -20,7 +20,7 @@ class Incubadoras extends Controller
         $user = auth('api_jwt')->user();
         if ($user->id_rol == 1) {
             $incubadoras = DB::table('incubadoras')
-                ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
+                ->join('hospitals', 'hospitals.id', '=' , 'incubadoras.id_hospital')
                 ->join('bebes', 'bebes.id_incubadora', '=', 'incubadoras.id')
                 ->select('incubadoras.*', 'hospitals.id', 'hospitals.nombre as hospital', 'bebes.id as id_bebe', 'bebes.nombre as nombre', 'bebes.apellido as apellido', 'bebes.fecha_nacimiento as fecha_nacimiento', 'bebes.sexo as sexo', 'bebes.id_estado', 'bebes.peso as peso')
                 ->get();
