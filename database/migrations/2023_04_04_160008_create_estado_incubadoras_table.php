@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('incubadoras', function (Blueprint $table) {
+        Schema::create('estado_incubadoras', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_hospital');
-            $table->foreign('id_hospital')->references('id')->on('hospitals');
+            $table->string('estado', 100);
             $table->boolean('is_active')->default(true);
-            $table->boolean('is_occupied')->default(false);
-            $table->unsignedBigInteger('id_estado');
-            $table->foreign('id_estado')->references('id')->on('estado_incubadoras');
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('incubadoras');
+        Schema::dropIfExists('estado_incubadoras');
     }
 };

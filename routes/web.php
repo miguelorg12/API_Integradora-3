@@ -20,3 +20,6 @@ Route::get('/', function () {
 
 Route::get('/password', [AuthController::class, 'recoveryPassword'])->name('reset');
 Route::post('/password_reset', [AuthController::class, 'resetPassword'])->name('password');
+
+Route::get('test', [AuthController::class, 'test']);
+Route::view('tst', 'checkingWebsocket');

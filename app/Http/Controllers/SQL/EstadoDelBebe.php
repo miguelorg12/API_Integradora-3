@@ -46,7 +46,7 @@ class EstadoDelBebes extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'estado' => 'required|string|min:3|max:50|regex:/^[a-zA-Z ]*$/',
+            'estado' => 'required|string|min:3|max:100|regex:/^[a-zA-Z ]*$/',
         ]);
         if ($validator->fails()) {
             return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
@@ -55,7 +55,6 @@ class EstadoDelBebes extends Controller
         $estadoDelBebe->estado = $request->estado;
         $estadoDelBebe->save();
         return response()->json(['msg' => 'EstadoDelBebe creado']);
-        return response()->json(['msg' => 'No tienes permisos']);
     }
 
     public function update(Request $request, $id)
