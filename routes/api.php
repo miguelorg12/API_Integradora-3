@@ -12,6 +12,7 @@ use App\Http\Controllers\SQL\Sensoress;
 use App\Http\Controllers\SQL\EstadoBebe;
 use App\Http\Controllers\SQL\SensoresIncubadorass;
 use App\Http\Controllers\SQL\Incubadoras;
+use App\Http\Controllers\EstadoIncubadoraController;
 use App\Http\Controllers\HospitalHibrido;
 use App\Http\Controllers\BebesHibrido;
 use App\Http\Controllers\EstadoBebeHibrido;
@@ -81,6 +82,15 @@ Route::prefix('hospital')->group(function ($router) {
     Route::post('/create', [HospitalHibrido::class, 'store']);
     Route::put('/update/{id}', [Hospitals::class, 'update'])->where('id', '[0-9]+');
     Route::delete('/delete/{id}', [Hospitals::class, 'destroy'])->where('id', '[0-9]+');
+});
+
+//Rutas EstadoIncubadora
+Route::prefix('estadoIncubadora')->group(function ($router) {
+    Route::get('/list', [EstadoIncubadoraController::class, 'index']);
+    Route::get('/oneEstadoIncubadora/{id}', [EstadoIncubadoraController::class, 'show'])->where('id', '[0-9]+');
+    Route::post('/create', [EstadoIncubadoraController::class, 'store']);
+    Route::put('/update/{id}', [EstadoIncubadoraController::class, 'update'])->where('id', '[0-9]+');
+    Route::delete('/delete/{id}', [EstadoIncubadoraController::class, 'destroy'])->where('id', '[0-9]+');
 });
 
 //Rutas Incubadoras

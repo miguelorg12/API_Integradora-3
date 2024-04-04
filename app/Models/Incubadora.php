@@ -25,4 +25,9 @@ class Incubadora extends Model
     {
         return $this->hasMany(Sensores_Incubadoras::class);
     }
+
+    public function estadoIncubadora()
+    {
+        return $this->belongsTo(EstadoIncubadora::class);
+    }
 }

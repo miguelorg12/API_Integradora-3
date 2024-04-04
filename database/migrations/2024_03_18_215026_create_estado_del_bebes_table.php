@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('estado_del_bebes', function (Blueprint $table) {
             $table->id();
-            $table->string('estado', 50);
+            $table->string('estado', 100);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

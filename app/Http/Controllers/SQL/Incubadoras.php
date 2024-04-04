@@ -22,13 +22,39 @@ class Incubadoras extends Controller
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
                 ->join('bebes', 'bebes.id_incubadora', '=', 'incubadoras.id')
-                ->select('incubadoras.*', 'hospitals.id', 'hospitals.nombre as hospital', 'bebes.id as id_bebe', 'bebes.nombre as nombre', 'bebes.apellido as apellido', 'bebes.fecha_nacimiento as fecha_nacimiento', 'bebes.sexo as sexo', 'bebes.id_estado', 'bebes.peso as peso')
+                ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
+                ->select(
+                    'incubadoras.*',
+                    'hospitals.id',
+                    'hospitals.nombre as hospital',
+                    'bebes.id as id_bebe',
+                    'bebes.nombre as nombre',
+                    'bebes.apellido as apellido',
+                    'bebes.fecha_nacimiento as fecha_nacimiento',
+                    'bebes.sexo as sexo',
+                    'bebes.id_estado',
+                    'bebes.peso as peso',
+                    'estado_incubadoras.estado as estado'
+                )
                 ->get();
         } else {
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
                 ->join('bebes', 'bebes.id_incubadora', '=', 'incubadoras.id')
-                ->select('incubadoras.*', 'hospitals.id', 'hospitals.nombre as hospital', 'bebes.id as id_bebe', 'bebes.nombre as nombre', 'bebes.apellido as apellido', 'bebes.fecha_nacimiento as fecha_nacimiento', 'bebes.sexo as sexo', 'bebes.id_estado', 'bebes.peso as peso')
+                ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
+                ->select(
+                    'incubadoras.*',
+                    'hospitals.id',
+                    'hospitals.nombre as hospital',
+                    'bebes.id as id_bebe',
+                    'bebes.nombre as nombre',
+                    'bebes.apellido as apellido',
+                    'bebes.fecha_nacimiento as fecha_nacimiento',
+                    'bebes.sexo as sexo',
+                    'bebes.id_estado',
+                    'bebes.peso as peso',
+                    'estado_incubadoras.estado as estado'
+                )
                 ->where('hospitals.id', $user->id_hospital)
                 ->where('incubadoras.is_active', true)
                 ->get();
@@ -41,7 +67,8 @@ class Incubadoras extends Controller
     {
         $incubadoras = DB::table('incubadoras')
             ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
-            ->select('incubadoras.*',  'hospitals.nombre as hospital')
+            ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
+            ->select('incubadoras.*',  'hospitals.nombre as hospital', 'estado_incubadoras.estado as estado')
             ->get();
 
         return response()->json(['Incubadoras' => $incubadoras]);
@@ -53,7 +80,8 @@ class Incubadoras extends Controller
         if ($user->id_rol == 1) {
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
-                ->select('incubadoras.*',  'hospitals.nombre as hospital')
+                ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
+                ->select('incubadoras.*',  'hospitals.nombre as hospital', 'estado_incubadoras.estado as estado')
                 ->where('incubadoras.is_active', true)
                 ->where('incubadoras.is_occupied', false)
                 ->get();
@@ -87,16 +115,16 @@ class Incubadoras extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id_hospital' => 'required|integer|exists:hospitals,id',
+            'id_estado' => 'required|integer|exists:estado_incubadoras,id',
         ]);
         if ($validator->fails()) {
             return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
         }
         $incubadora = new Incubadora;
         $incubadora->id_hospital = $request->id_hospital;
+        $incubadora->id_estado = $request->id_estado;
         $incubadora->save();
         return response()->json(['msg' => 'Incubadora creada']);
-
-        return response()->json(['msg' => 'No tienes permisos']);
     }
 
     public function update(Request $request, $id)
