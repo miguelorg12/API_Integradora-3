@@ -35,6 +35,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/server', 'serverController@index');
+
+
 //Rutas Usuario
 Route::prefix('auth')->group(function ($router) {
     Route::post('register', [AuthController::class, 'register']);

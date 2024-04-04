@@ -8,14 +8,23 @@ use App\Models\Rol;
 
 class Roles extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:api_jwt', ['except' => []]);
+    }
+
     public function index()
     {
-        $roles = Rol::all();
+        $user = auth()->user();
+        if ($user->id_rol == 1) {
+            $roles = Rol::all();
+            return response()->json(['msg' => 'Roles', 'data' => $roles]);
+        }
+        else{
+            $roles = Rol::where('is_active', true)
+            ->where('id', '!=', 1)
+            ->get();
+        }
         return response()->json(['msg' => 'Roles', 'data' => $roles]);
     }
 
