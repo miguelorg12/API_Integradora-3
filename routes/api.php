@@ -51,7 +51,7 @@ Route::prefix('auth')->group(function ($router) {
         ->name('activate')->middleware('signed');
     Route::get('checkActive/{user}', [AuthController::class, 'checkActive'])
         ->name('checkActive');
-    Route::post('verifyToken', [AuthController::class, 'verifyToken'])->middleware('active');
+    Route::post('verifyToken', [AuthController::class, 'verifyToken']);
     Route::post('restablecer', [AuthController::class, 'restablecer']);
     Route::get('recoveryPassword/{user}', [AuthController::class, 'recoveryPassword'])->name('recoveryPassword');
 });
@@ -63,6 +63,8 @@ Route::prefix('user')->group(function ($router) {
     Route::post('/create', [Usuario::class, 'store']);
     Route::put('/update/{id}', [Usuario::class, 'update'])->where('id', '[0-9]+');
     Route::delete('/delete/{id}', [Usuario::class, 'delete'])->where('id', '[0-9]+');
+    Route::get('/getRole', [Usuario::class, 'getRole']);
+    Route::get('/isActive', [Usuario::class, 'isActive']);
 });
 
 //Rutas Roles

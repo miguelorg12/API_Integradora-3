@@ -24,11 +24,11 @@ class active
         }
 
         if (!$user->activated_at) {
-            return response()->json(['error' => 'Primero active su cuenta'], 401);
+            return response()->json(['active' => 'Primero active su cuenta'], 401);
         }
 
         if (!$user->is_active) {
-            return response()->json(['error' => 'Su cuenta ha sido desactivada por los administradores'], 403);
+            return response()->json(['admin_active' => 'Su cuenta ha sido desactivada por los administradores'], 403);
         }
         return $next($request);
     }
