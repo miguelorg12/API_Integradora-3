@@ -13,17 +13,16 @@ use Illuminate\Queue\SerializesModels;
 class testWebsocket implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    public $data;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public $data;
-    public function __construct()
+    public function __construct($data)
     {
-        //
-        $this->data = 'Esta es una prueba de websocket';
+        $this->data = $data;
     }
 
     /**
