@@ -11,7 +11,7 @@ class MongoBebes extends Controller
     {
         $bebe = new Bebes;
         $bebe->fill($request->all());
-        $bebe->save();
+        //$bebe->save();
         return response()->json(['message' => 'Bebe created in MongoDB'], 201);
     }   
 }

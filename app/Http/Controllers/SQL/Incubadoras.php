@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Incubadora;
 use App\Models\Sensores_Incubadoras;
+use App\Models\Sensores;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,9 +17,9 @@ class Incubadoras extends Controller
         $this->middleware('auth:api_jwt');
     }
 
-    public function index()
+    public function indexwithBabys()
     {
-        $user = auth('api_jwt')->user();
+        $user = auth()->user();
         if ($user->id_rol == 1) {
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'hospitals.id', '=' , 'incubadoras.id_hospital')
@@ -63,6 +64,39 @@ class Incubadoras extends Controller
 
         return response()->json(['Incubadoras' => $incubadoras]);
     }
+    
+    public function index()
+    {
+        $user = auth()->user();
+        if ($user->id_rol === 1) {
+            $incubadoras = DB::table('incubadoras')
+                ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
+                ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
+                ->select(
+                    'incubadoras.*',
+                    'hospitals.nombre as hospital',
+                    'estado_incubadoras.estado as estado'
+                )
+                ->get();
+        } else {
+            $incubadoras = DB::table('incubadoras')
+                ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
+                ->join('bebes', 'bebes.id_incubadora', '=', 'incubadoras.id')
+                ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
+                ->select(
+                    'incubadoras.*',
+                    'hospitals.id',
+                    'hospitals.nombre as hospital',
+                    'estado_incubadoras.estado as estado'
+                )
+                ->where('hospitals.id', $user->id_hospital)
+                ->where('incubadoras.is_active', true)
+                ->get();
+        }
+
+        return response()->json(['Incubadoras' => $incubadoras]);
+    }
+
 
     public function Incubadoras()
     {
@@ -125,11 +159,18 @@ class Incubadoras extends Controller
         $incubadora->id_hospital = $request->id_hospital;
         $incubadora->id_estado = $request->id_estado;
         $incubadora->save();
-        $sensores_incubadora = new Sensores_Incubadoras;
-        $sensores = [];
-        $sensores_incubadora->id_incubadora = $incubadora->id;
-
-
+        $sensores = $request->input('id_sensores');
+        foreach ($sensores as $sensorId) {
+            $sensor = Sensores::find($sensorId);
+            if ($sensor) {
+                $folio = rand(100, 999) . strtoupper(substr($sensor->nombre, 0, 1));
+                $sensores_incubadora = new Sensores_Incubadoras;
+                $sensores_incubadora->id_incubadora = $incubadora->id;
+                $sensores_incubadora->id_sensor = $sensorId;
+                $sensores_incubadora->folio = $folio;
+                $sensores_incubadora->save();
+            }
+    }
         return response()->json(['msg' => 'Incubadora creada']);
     }
 
@@ -169,7 +210,6 @@ class Incubadoras extends Controller
         }
         $incubadora->is_active = false;
         $incubadora->is_occupied = false;
-        $incubadora->optimo = false;
         $incubadora->save();
         return response()->json(['msg' => 'Incubadora eliminada']);
     }

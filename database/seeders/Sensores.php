@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Sensor;
+use App\Models\Sensores as Sensor;
 
 class Sensores extends Seeder
 {
@@ -18,10 +18,14 @@ class Sensores extends Seeder
         $sensores = [
             ['nombre' => 'Sensor de Temperatura', 'unidad' => '°C'],
             ['nombre' => 'Sensor de Humedad', 'unidad' => '%'],
-            ['nombre' => 'Sensor de Humedad'],
-            ['nombre' => 'Sensor de Luz'],
-            ['nombre' => 'Sensor de Movimiento'],
-            ['nombre' => 'Sensor de Sonido'],
+            ['nombre' => 'Sensor de Pulso', 'unidad' => 'BPM'],
+            ['nombre' => 'Sensor de Calidad de Aire', 'unidad' => 'ppm'],
+            ['nombre' => 'Sensor de Sonido', 'unidad' => 'dB'],
+            ['nombre' => 'Microfono', 'unidad' => 'dB'],
         ];
+
+        foreach ($sensores as $sensor) {
+            Sensor::create($sensor);
+        }
     }
 }

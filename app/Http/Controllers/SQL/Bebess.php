@@ -97,28 +97,23 @@ class Bebess extends Controller
 
     public function update(Request $request, $id)
     {
-        $bebe = Bebes::where('id', $id)->first();
+        $bebe = Bebes::find($id);
         if (!$bebe) {
             return response()->json(['msg' => 'Bebe no encontrado']);
         }
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:3|max:100|regex:/^[a-zA-Z ]*$/',
             'apellido' => 'required|string|min:3|max:100|regex:/^[a-zA-Z ]*$/',
-            'sexo' => 'required|in:M,F|min:1|max:1|regex:/^[a-zA-Z ]*$/',
-            'fecha_nacimiento' => 'required|date',
-            'edad' => 'required|integer',
             'peso' => 'required|numeric',
-            'id_estado' => 'required|integer|exists:estados_del_bebes,id',
-            'id_incubadora' => 'required|integer|exists:incubadoras,id',
+            'id_estado' => 'required|integer',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+        }
         $bebe->nombre = $request->nombre;
         $bebe->apellido = $request->apellido;
-        $bebe->sexo = $request->sexo;
-        $bebe->fecha_nacimiento = $request->fecha_nacimiento;
-        $bebe->edad = $request->edad;
         $bebe->peso = $request->peso;
         $bebe->id_estado = $request->id_estado;
-        $bebe->id_incubadora = $request->id_incubadora;
         $bebe->save();
         return response()->json(['msg' => 'Bebe actualizado']);
     }

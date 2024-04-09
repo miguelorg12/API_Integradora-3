@@ -12,7 +12,7 @@ class MongoIncubadora extends Controller
     {
         $incubadora = new Incubadora;
         $incubadora->fill($request->all());
-        $incubadora->save();
+        //$incubadora->save();
         return response()->json(['message' => 'Incubadora created in MongoDB'], 201);
     }
 }

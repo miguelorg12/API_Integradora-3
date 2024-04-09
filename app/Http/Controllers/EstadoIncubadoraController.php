@@ -18,10 +18,10 @@ class EstadoIncubadoraController extends Controller
         $user = auth()->user();
         if ($user->id_rol == 1) {
             $estadoIncubadora = EstadoIncubadora::all();
-            return response()->json('estadoIncubadoras', $estadoIncubadora);
+            return response()->json(['estado' => $estadoIncubadora]);
         } else {
             $estadoIncubadora = EstadoIncubadora::where('is_active', true)->get();
-            return response()->json('estadoIncubadoras', $estadoIncubadora);
+            return response()->json(['estado' => $estadoIncubadora]);
         }
     }
 
@@ -33,13 +33,13 @@ class EstadoIncubadoraController extends Controller
             if (!$estadoIncubadora) {
                 return response()->json(['error' => 'EstadoIncubadora no encontrado'], 404);
             }
-            return response()->json(['estadoIncubadora', $estadoIncubadora]);
+            return response()->json(['estado' => $estadoIncubadora]);
         } else {
             $estadoIncubadora = EstadoIncubadora::where('id', $id)->where('is_active', true)->first();
             if (!$estadoIncubadora) {
                 return response()->json(['error' => 'EstadoIncubadora no encontrado'], 404);
             }
-            return response()->json(['estadoIncubadora', $estadoIncubadora]);
+            return response()->json(['estado' => $estadoIncubadora]);
         }
     }
 
