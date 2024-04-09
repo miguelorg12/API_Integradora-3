@@ -30,8 +30,8 @@ class Hospitals extends Controller
     public function hospitals()
     {
         $hospitals = Hospital::where('is_active', true)
-        ->where('nombre', '!=', 'Hospital General')
-        ->get();
+            ->where('nombre', '!=', 'Hospital General')
+            ->get();
         return response()->json(['Hospitales' => $hospitals]);
     }
 

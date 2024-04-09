@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SQL;
 
+use App\Events\testWebsocket;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sensores;
@@ -71,5 +72,11 @@ class Sensoress extends Controller
         $sensor->is_active = false;
         $sensor->save();
         return response()->json(['msg' => 'Sensor eliminado']);
+    }
+
+    public function message(Request $request)
+    {
+        event(new testWebsocket($request->all()));
+        return response()->json(['msg' => $request]);
     }
 }
