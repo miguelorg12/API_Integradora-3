@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SQL;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Incubadora;
+use App\Models\Sensores_Incubadoras;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -124,6 +125,11 @@ class Incubadoras extends Controller
         $incubadora->id_hospital = $request->id_hospital;
         $incubadora->id_estado = $request->id_estado;
         $incubadora->save();
+        $sensores_incubadora = new Sensores_Incubadoras;
+        $sensores = [];
+        $sensores_incubadora->id_incubadora = $incubadora->id;
+
+
         return response()->json(['msg' => 'Incubadora creada']);
     }
 

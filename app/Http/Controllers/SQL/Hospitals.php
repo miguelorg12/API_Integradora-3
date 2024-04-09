@@ -22,7 +22,7 @@ class Hospitals extends Controller
             $hospitals = Hospital::all();
             return response()->json(['Hospitales' => $hospitals]);
         } else {
-            $hospitals = Hospital::all();
+            $hospitals = Hospital::where('id', $user->id_hospital)->get();
         }
         return response()->json(['Hospitales' => $hospitals]);
     }
