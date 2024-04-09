@@ -77,6 +77,6 @@ class Sensoress extends Controller
     public function message(Request $request)
     {
         event(new testWebsocket($request->all()));
-        return response()->json(['msg' => $request]);
+        return response()->json(['msg' => $request->all()]);
     }
 }
