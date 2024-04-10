@@ -25,6 +25,7 @@ class Usuario extends Controller
             ->orderBy('users.id', 'asc')
             ->select('users.id', 'users.name', 'users.last_name', 'users.email','users.is_active', 'rols.nombre as rol', 'hospitals.nombre as hospital')
             ->where('users.is_active', true)
+            ->where('users.id','!=', 1)
             ->get();
             return response()->json(['msg' => 'Usuarios', 'data' => $users]);
         } else if ($usuario->id_rol == 2) {
@@ -126,7 +127,7 @@ class Usuario extends Controller
                 'last_name' => 'required|string|max:100',
             ]);
             if ($validator->fails()) {
-                return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+                return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
             }
             
             $user->name = $request->name;
@@ -149,5 +150,20 @@ class Usuario extends Controller
         $user->is_active = 0;
         $user->save();
         return response()->json(['msg' => 'Usuario eliminado']);
+    }
+
+    public function getRole(Request $request) {
+        $user = auth()->user(); 
+        if ($user) {
+            return response()->json(['role' => $user->id_rol]);
+        } else {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+    }
+
+    public function isActive(Request $request)
+    {
+        $usuario = auth()->user();
+        return response()->json(['msg' => 'Estado del usuario', 'data' => $usuario->is_active]);
     }
 }

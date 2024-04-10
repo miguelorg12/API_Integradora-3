@@ -20,13 +20,19 @@ class Bebess extends Controller
     {
         $user = auth()->user();
         if ($user->id_rol == 1) {
-            $bebes = Bebes::all();
+            $bebes = DB::table('bebes')
+                ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
+                ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
+                ->join('estado_del_bebes', 'bebes.id_estado', '=', 'estado_del_bebes.id')
+                ->select('bebes.*', 'estado_del_bebes.estado', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+                ->get();
             return response()->json(['msg' => 'Bebes', 'data' => $bebes]);
         }
         $bebes = DB::table('bebes')
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
-            ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+            ->join('estados_del_bebes', 'bebes.id_estado', '=', 'estados_del_bebes.id')
+            ->select('bebes.*', 'estado_del_bebes.estado','incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
             ->where('hospitals.id', $user->id_hospital)
             ->get();
         return response()->json(['Bebes' => $bebes]);
@@ -91,28 +97,23 @@ class Bebess extends Controller
 
     public function update(Request $request, $id)
     {
-        $bebe = Bebes::where('id', $id)->first();
+        $bebe = Bebes::find($id);
         if (!$bebe) {
             return response()->json(['msg' => 'Bebe no encontrado']);
         }
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:3|max:100|regex:/^[a-zA-Z ]*$/',
             'apellido' => 'required|string|min:3|max:100|regex:/^[a-zA-Z ]*$/',
-            'sexo' => 'required|in:M,F|min:1|max:1|regex:/^[a-zA-Z ]*$/',
-            'fecha_nacimiento' => 'required|date',
-            'edad' => 'required|integer',
             'peso' => 'required|numeric',
-            'id_estado' => 'required|integer|exists:estados_del_bebes,id',
-            'id_incubadora' => 'required|integer|exists:incubadoras,id',
+            'id_estado' => 'required|integer',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+        }
         $bebe->nombre = $request->nombre;
         $bebe->apellido = $request->apellido;
-        $bebe->sexo = $request->sexo;
-        $bebe->fecha_nacimiento = $request->fecha_nacimiento;
-        $bebe->edad = $request->edad;
         $bebe->peso = $request->peso;
         $bebe->id_estado = $request->id_estado;
-        $bebe->id_incubadora = $request->id_incubadora;
         $bebe->save();
         return response()->json(['msg' => 'Bebe actualizado']);
     }
@@ -128,7 +129,7 @@ class Bebess extends Controller
         ]);
         $incubadora = Incubadora::where('id', $bebe->id_incubadora)->first();
         $incubadora->is_occupied = false;
-        $bebe->id_estado = $request->id_estado;
+        $bebe->id_estado = 2;
         $bebe->save();
         return response()->json(['msg' => 'Bebe Eliminado']);
     }

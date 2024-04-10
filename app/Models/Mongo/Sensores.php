@@ -8,7 +8,7 @@ class Sensores extends Model
 {
     protected $connection = 'mongodb';
     protected $collection = 'sensores';
-    protected $fillable = ['nombre', 'unidad', 'folio'];
+    protected $fillable = ['nombre', 'unidad'];
 
     public function sensoresIncubadora()
     {

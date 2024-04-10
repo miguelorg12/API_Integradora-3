@@ -22,7 +22,7 @@ class Hospitals extends Controller
             $hospitals = Hospital::all();
             return response()->json(['Hospitales' => $hospitals]);
         } else {
-            $hospitals = Hospital::all();
+            $hospitals = Hospital::where('id', $user->id_hospital)->get();
         }
         return response()->json(['Hospitales' => $hospitals]);
     }
@@ -30,8 +30,8 @@ class Hospitals extends Controller
     public function hospitals()
     {
         $hospitals = Hospital::where('is_active', true)
-        ->where('nombre', '!=', 'Hospital General')
-        ->get();
+            ->where('nombre', '!=', 'Hospital General')
+            ->get();
         return response()->json(['Hospitales' => $hospitals]);
     }
 

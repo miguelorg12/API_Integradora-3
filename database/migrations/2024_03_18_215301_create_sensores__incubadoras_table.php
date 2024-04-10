@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_sensor');
             $table->foreign('id_sensor')->references('id')->on('sensores');
             $table->boolean('is_active')->default(true);
+            $table->string('folio', 100)->unique();
             $table->timestamps();
         });
     }

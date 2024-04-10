@@ -86,7 +86,7 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
         $credentials = ['email' => $email, 'password' => $password];
         if (!Auth::guard('api_jwt')->attempt($credentials)) {
-            return response()->json(['error' => 'Credenciales incorrectas'], 401);
+            return response()->json(['credenciales' => 'Credenciales incorrectas'], 401);
         }
         $code = rand(100000, 999999);
         $codigo = Codigo::where('user_id', $user->id)->first();
