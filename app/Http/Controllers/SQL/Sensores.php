@@ -29,15 +29,13 @@ class Sensors extends Controller
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:1|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'unidad' => 'required|string|min:1|max:100|regex:/^[a-zA-Z0-9 ]*$/',
-            'folio' => 'required|string|min:1|max:100|regex:/^[a-zA-Z0-9 ]*$/|unique:sensores,folio',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $sensor = new Sensores;
         $sensor->nombre = $request->nombre;
         $sensor->unidad = $request->unidad;
-        $sensor->folio = $request->folio;
         $sensor->save();
         return response()->json(['msg' => 'Sensor creado']);
     }

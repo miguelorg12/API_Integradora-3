@@ -20,14 +20,20 @@ class ContactoFamiliares extends Controller
     {
         $user = auth()->user();
         if ($user->id_rol == 1) {
-            $contactoFamiliar = ContactoFamiliar::all();
+            $contactoFamiliar = DB::table('contacto_familiars')
+            ->join('bebes', 'contacto_familiars.id_bebe', '=', 'bebes.id')
+            ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
+            ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
+            ->select('contacto_familiars.*', 'bebes.id as id_bebe', 'bebes.nombre as bebe_nombre', 'bebes.apellido as bebe_apellido', 'incubadoras.id as id_incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+            ->where('contacto_familiars.is_active', true)
+            ->get();
             return response()->json(['msg' => 'ContactoFamiliar', 'data' => $contactoFamiliar]);
         } else {
             $contactoFamiliar = DB::table('contacto_familiars')
                 ->join('bebes', 'contacto_familiars.id_bebe', '=', 'bebes.id')
                 ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
-                ->select('contacto_familiars.*', 'bebes.id as id_bebe', 'bebes.nombre as bebe', 'incubadoras.id as id_incubadora', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+                ->select('contacto_familiars.*', 'bebes.id as id_bebe', 'bebes.nombre as bebe', 'incubadoras.id as id_incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
                 ->where('contacto_familiars.is_active', true)
                 ->where('hospitals.id', $user->id_hospital)
                 ->get();

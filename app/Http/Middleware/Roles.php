@@ -16,7 +16,7 @@ class Roles
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->id_rol == 5) {
+        if (auth('api_jwt')->user()->id_rol == 5) {
             return response()->json(['error' => 'No tines permiso para esta acción'], 401);
         }
         return $next($request);

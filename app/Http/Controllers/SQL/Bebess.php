@@ -91,6 +91,11 @@ class Bebess extends Controller
         $bebe->peso = $request->peso;
         $bebe->id_estado = $request->id_estado;
         $bebe->id_incubadora = $request->id_incubadora;
+        $incubadora = Incubadora::find($request->id_incubadora);
+        if ($incubadora) {
+            $incubadora->is_occupied = true;
+            $incubadora->save();
+        }
         $bebe->save();
         return response()->json(['msg' => 'Bebe creado']);
     }
@@ -115,6 +120,11 @@ class Bebess extends Controller
         $bebe->peso = $request->peso;
         $bebe->id_estado = $request->id_estado;
         $bebe->save();
+        if ($request->id_estado == 3 || $request->id_estado == 2) {
+            $incubadora = Incubadora::where('id', $bebe->id_incubadora)->first();
+            $incubadora->is_occupied = false;
+            $incubadora->save();
+        }
         return response()->json(['msg' => 'Bebe actualizado']);
     }
 

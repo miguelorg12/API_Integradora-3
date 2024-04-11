@@ -19,7 +19,13 @@ class HistorialMedicoBebes extends Controller
     {
         $user = auth()->user();
         if ($user->id_rol == 1) {
-            $historialMedico = HistorialMedico::all();
+            $historialMedico = DB::table('historial_medicos')
+            ->join('bebes', 'historial_medicos.id_bebe', '=', 'bebes.id')
+            ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
+            ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
+            ->select('historial_medicos.*', 'bebes.id as id_bebe', 'bebes.nombre as bebe', 'bebes.apellido as bebe_apellido')
+            ->where('historial_medicos.is_active', true)
+            ->get();
             return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico]);
         }
         $historialMedico = DB::table('historial_medicos')

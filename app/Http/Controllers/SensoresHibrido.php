@@ -14,15 +14,13 @@ class SensoresHibrido extends Controller
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:1|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'unidad' => 'required|string|min:1|max:100',
-            'folio' => 'required|string|min:1|max:100|regex:/^[a-zA-Z0-9 ]*$/|unique:sensores,folio',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
 
         $mongoController = new MongoSensores;
         $mongoController->store($request);
-
         $sqlController = new SQLSensores;
         $sqlController->store($request);
 
