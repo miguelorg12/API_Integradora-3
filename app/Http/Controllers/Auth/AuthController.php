@@ -53,7 +53,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Successfully logged out'], 200);
     }
 
     public function refresh()
@@ -256,8 +256,8 @@ class AuthController extends Controller
         return redirect('restPassword')->with('success', 'Contraseña restablecida correctamente');
     }
 
-    public function test()
+    /*public function test()
     {
         event(new testWebsocket);
-    }
+    }*/
 }

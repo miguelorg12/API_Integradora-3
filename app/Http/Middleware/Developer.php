@@ -16,7 +16,7 @@ class Developer
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->id_rol == 1) {
+        if (auth('api_jwt')->user()->id_rol == 1) {
             return $next($request);
         }
         return response()->json(['error' => 'No tines permiso para esta acción'], 401);

@@ -18,14 +18,13 @@ class Roles extends Controller
         $user = auth()->user();
         if ($user->id_rol == 1) {
             $roles = Rol::all();
-            return response()->json(['msg' => 'Roles', 'data' => $roles]);
-        }
-        else{
+            return response()->json(['msg' => 'Roles', 'data' => $roles], 200);
+        } else {
             $roles = Rol::where('is_active', true)
-            ->where('id', '!=', 1)
-            ->get();
+                ->where('id', '!=', 1)
+                ->get();
         }
-        return response()->json(['msg' => 'Roles', 'data' => $roles]);
+        return response()->json(['msg' => 'Roles', 'data' => $roles], 200);
     }
 
     /**
@@ -50,12 +49,12 @@ class Roles extends Controller
             'nombre' => 'required|string|min:3|max:100',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $rol = new Rol();
         $rol->nombre = $request->nombre;
         $rol->save();
-        return response()->json(['msg' => 'Rol creado', 'data' => $rol]);
+        return response()->json(['msg' => 'Rol creado', 'data' => $rol], 201);
     }
 
     /**
@@ -68,9 +67,9 @@ class Roles extends Controller
     {
         $rol = Rol::where('id', $id)->first();
         if (!$rol) {
-            return response()->json(['msg' => 'Rol no encontrado']);
+            return response()->json(['msg' => 'Rol no encontrado'], 404);
         }
-        return response()->json(['msg' => 'Rol', 'data' => $rol]);
+        return response()->json(['Rol' => $rol], 200);
     }
 
     /**
@@ -95,17 +94,17 @@ class Roles extends Controller
     {
         $rol = Rol::where('id', $id)->first();
         if (!$rol) {
-            return response()->json(['msg' => 'Rol no encontrado']);
+            return response()->json(['msg' => 'Rol no encontrado'], 404);
         }
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:3|max:100',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $rol->nombre = $request->nombre;
         $rol->save();
-        return response()->json(['msg' => 'Rol actualizado', 'data' => $rol]);
+        return response()->json(['msg' => 'Rol actualizado'], 200);
     }
 
     /**
@@ -118,10 +117,10 @@ class Roles extends Controller
     {
         $rol = Rol::where('id', $id)->first();
         if (!$rol) {
-            return response()->json(['msg' => 'Rol no encontrado']);
+            return response()->json(['msg' => 'Rol no encontrado'], 404);
         }
         $rol->is_active = false;
         $rol->save();
-        return response()->json(['msg' => 'Rol eliminado']);
+        return response()->json(['msg' => 'Rol eliminado'], 200);
     }
 }

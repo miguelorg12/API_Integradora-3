@@ -22,7 +22,7 @@ class Incubadoras extends Controller
         $user = auth()->user();
         if ($user->id_rol == 1) {
             $incubadoras = DB::table('incubadoras')
-                ->join('hospitals', 'hospitals.id', '=' , 'incubadoras.id_hospital')
+                ->join('hospitals', 'hospitals.id', '=', 'incubadoras.id_hospital')
                 ->join('bebes', 'bebes.id_incubadora', '=', 'incubadoras.id')
                 ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
                 ->select(
@@ -62,9 +62,9 @@ class Incubadoras extends Controller
                 ->get();
         }
 
-        return response()->json(['Incubadoras' => $incubadoras]);
+        return response()->json(['Incubadoras' => $incubadoras], 200);
     }
-    
+
     public function index()
     {
         $user = auth()->user();
@@ -94,7 +94,7 @@ class Incubadoras extends Controller
                 ->get();
         }
 
-        return response()->json(['Incubadoras' => $incubadoras]);
+        return response()->json(['Incubadoras' => $incubadoras], 200);
     }
 
 
@@ -106,7 +106,7 @@ class Incubadoras extends Controller
             ->select('incubadoras.*',  'hospitals.nombre as hospital', 'estado_incubadoras.estado as estado')
             ->get();
 
-        return response()->json(['Incubadoras' => $incubadoras]);
+        return response()->json(['Incubadoras' => $incubadoras], 200);
     }
 
     public function incubadorasDisponibles()
@@ -129,7 +129,7 @@ class Incubadoras extends Controller
                 ->where('hospitals.id', $user->id_hospital)
                 ->get();
         }
-        return response()->json(['Incubadoras' => $incubadoras]);
+        return response()->json(['Incubadoras' => $incubadoras], 200);
     }
 
     public function show($id)
@@ -141,9 +141,9 @@ class Incubadoras extends Controller
             $incubadora = Incubadora::where('id', $id)->where('is_active', 1)->first();
         }
         if (!$incubadora) {
-            return response()->json(['msg' => 'Incubadora no encontrada']);
+            return response()->json(['msg' => 'Incubadora no encontrada'], 404);
         }
-        return response()->json(['Incubadora' => $incubadora]);
+        return response()->json(['Incubadora' => $incubadora], 200);
     }
 
     public function store(Request $request)
@@ -153,7 +153,7 @@ class Incubadoras extends Controller
             'id_estado' => 'required|integer|exists:estado_incubadoras,id',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $incubadora = new Incubadora;
         $incubadora->id_hospital = $request->id_hospital;
@@ -170,8 +170,8 @@ class Incubadoras extends Controller
                 $sensores_incubadora->folio = $folio;
                 $sensores_incubadora->save();
             }
-    }
-        return response()->json(['msg' => 'Incubadora creada']);
+        }
+        return response()->json(['msg' => 'Incubadora creada'], 201);
     }
 
     public function update(Request $request, $id)
@@ -183,7 +183,7 @@ class Incubadoras extends Controller
             $incubadora = Incubadora::where('id', $id)->where('is_active', 1)->first();
         }
         if (!$incubadora) {
-            return response()->json(['msg' => 'Incubadora no encontrada']);
+            return response()->json(['msg' => 'Incubadora no encontrada'], 404);
         }
         $validator = Validator::make($request->all(), [
             'id_hospital' => 'required|integer|exists:hospitals,id',
@@ -192,25 +192,25 @@ class Incubadoras extends Controller
             'optimo' => 'required|boolean',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $incubadora->id_hospital = $request->id_hospital;
         $incubadora->is_active = $request->is_active;
         $incubadora->is_occupied = $request->is_occupied;
         $incubadora->optimo = $request->optimo;
         $incubadora->save();
-        return response()->json(['msg' => 'Incubadora actualizada']);
+        return response()->json(['msg' => 'Incubadora actualizada'], 200);
     }
 
     public function destroy($id)
     {
         $incubadora = Incubadora::where('id', $id)->where('is_active', 1)->first();
         if (!$incubadora) {
-            return response()->json(['msg' => 'Incubadora no encontrada']);
+            return response()->json(['msg' => 'Incubadora no encontrada'], 404);
         }
         $incubadora->is_active = false;
         $incubadora->is_occupied = false;
         $incubadora->save();
-        return response()->json(['msg' => 'Incubadora eliminada']);
+        return response()->json(['msg' => 'Incubadora eliminada'], 200);
     }
 }
