@@ -31,8 +31,8 @@ class Bebess extends Controller
         $bebes = DB::table('bebes')
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
-            ->join('estados_del_bebes', 'bebes.id_estado', '=', 'estados_del_bebes.id')
-            ->select('bebes.*', 'estado_del_bebes.estado','incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+            ->join('estado_del_bebes', 'bebes.id_estado', '=', 'estado_del_bebes.id')
+            ->select('bebes.*', 'estado_del_bebes.estado', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
             ->where('hospitals.id', $user->id_hospital)
             ->get();
         return response()->json(['Bebes' => $bebes], 200);
