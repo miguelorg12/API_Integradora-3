@@ -20,13 +20,13 @@ class HistorialMedicoBebes extends Controller
         $user = auth()->user();
         if ($user->id_rol == 1) {
             $historialMedico = DB::table('historial_medicos')
-            ->join('bebes', 'historial_medicos.id_bebe', '=', 'bebes.id')
-            ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
-            ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
-            ->select('historial_medicos.*', 'bebes.id as id_bebe', 'bebes.nombre as bebe', 'bebes.apellido as bebe_apellido')
-            ->where('historial_medicos.is_active', true)
-            ->get();
-            return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico]);
+                ->join('bebes', 'historial_medicos.id_bebe', '=', 'bebes.id')
+                ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
+                ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
+                ->select('historial_medicos.*', 'bebes.id as id_bebe', 'bebes.nombre as bebe', 'bebes.apellido as bebe_apellido')
+                ->where('historial_medicos.is_active', true)
+                ->get();
+            return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico], 200);
         }
         $historialMedico = DB::table('historial_medicos')
             ->join('bebes', 'historial_medicos.id_bebe', '=', 'bebes.id')
@@ -36,7 +36,7 @@ class HistorialMedicoBebes extends Controller
             ->where('hospitals.id', $user->id_hospital)
             ->where('historial_medicos.is_active', true)
             ->get();
-        return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico]);
+        return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico], 200);
     }
 
     public function show($id)
@@ -45,9 +45,9 @@ class HistorialMedicoBebes extends Controller
         if ($user->id_rol == 1) {
             $historialMedico = HistorialMedico::where('id', $id)->first();
             if (!$historialMedico) {
-                return response()->json(['msg' => 'HistorialMedico no encontrado']);
+                return response()->json(['msg' => 'HistorialMedico no encontrado'], 404);
             }
-            return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico]);
+            return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico], 200);
         }
         $historialMedico = DB::table('historial_medicos')
             ->join('bebes', 'historial_medicos.id_bebe', '=', 'bebes.id')
@@ -58,7 +58,7 @@ class HistorialMedicoBebes extends Controller
             ->where('hospitals.id', $user->id_hospital)
             ->where('historial_medicos.is_active', true)
             ->get();
-        return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico]);
+        return response()->json(['msg' => 'HistorialMedico', 'data' => $historialMedico], 200);
     }
 
     public function store(Request $request)
@@ -69,43 +69,43 @@ class HistorialMedicoBebes extends Controller
             'medicamentos' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $historialMedico = new HistorialMedico();
         $historialMedico->id_bebe = $request->id_bebe;
         $historialMedico->diagnostico = $request->diagnostico;
         $historialMedico->medicamentos = $request->medicamentos;
         $historialMedico->save();
-        return response()->json(['msg' => 'HistorialMedico creado']);
+        return response()->json(['msg' => 'HistorialMedico creado'], 201);
     }
 
     public function update(Request $request, $id)
     {
         $historialMedico = HistorialMedico::where('id', $id)->first();
         if (!$historialMedico) {
-            return response()->json(['msg' => 'HistorialMedico no encontrado']);
+            return response()->json(['msg' => 'HistorialMedico no encontrado'], 404);
         }
         $validator = Validator::make($request->all(), [
             'diagnostico' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'medicamentos' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
         ]);
         if ($validator->fails()) {
-            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()]);
+            return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         $historialMedico->diagnostico = $request->diagnostico;
         $historialMedico->medicamentos = $request->medicamentos;
         $historialMedico->save();
-        return response()->json(['msg' => 'HistorialMedico actualizado']);
+        return response()->json(['msg' => 'HistorialMedico actualizado'], 200);
     }
 
     public function destroy($id)
     {
         $historialMedico = HistorialMedico::where('id', $id)->where('is_active', true)->first();
         if (!$historialMedico) {
-            return response()->json(['msg' => 'HistorialMedico no encontrado']);
+            return response()->json(['msg' => 'HistorialMedico no encontrado'], 404);
         }
         $historialMedico->is_active = false;
         $historialMedico->save();
-        return response()->json(['msg' => 'HistorialMedico eliminado']);
+        return response()->json(['msg' => 'HistorialMedico eliminado'], 200);
     }
 }

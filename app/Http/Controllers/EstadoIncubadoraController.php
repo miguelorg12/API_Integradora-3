@@ -18,10 +18,10 @@ class EstadoIncubadoraController extends Controller
         $user = auth()->user();
         if ($user->id_rol == 1) {
             $estadoIncubadora = EstadoIncubadora::all();
-            return response()->json(['estado' => $estadoIncubadora]);
+            return response()->json(['estado' => $estadoIncubadora], 200);
         } else {
             $estadoIncubadora = EstadoIncubadora::where('is_active', true)->get();
-            return response()->json(['estado' => $estadoIncubadora]);
+            return response()->json(['estado' => $estadoIncubadora], 200);
         }
     }
 
@@ -33,13 +33,13 @@ class EstadoIncubadoraController extends Controller
             if (!$estadoIncubadora) {
                 return response()->json(['error' => 'EstadoIncubadora no encontrado'], 404);
             }
-            return response()->json(['estado' => $estadoIncubadora]);
+            return response()->json(['estado' => $estadoIncubadora], 200);
         } else {
             $estadoIncubadora = EstadoIncubadora::where('id', $id)->where('is_active', true)->first();
             if (!$estadoIncubadora) {
                 return response()->json(['error' => 'EstadoIncubadora no encontrado'], 404);
             }
-            return response()->json(['estado' => $estadoIncubadora]);
+            return response()->json(['estado' => $estadoIncubadora], 200);
         }
     }
 
@@ -50,12 +50,12 @@ class EstadoIncubadoraController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['error' => $validator->errors()], 400);
         }
         $estadoIncubadora = new EstadoIncubadora();
         $estadoIncubadora->estado = $request->estado;
         $estadoIncubadora->save();
-        return response()->json(['estadoIncubadora creado']);
+        return response()->json(['estadoIncubadora creado'], 201);
     }
 
     public function update(Request $request, $id)
@@ -68,11 +68,11 @@ class EstadoIncubadoraController extends Controller
             'estado' => 'required|string|max:100|min:3|regex:/^[a-zA-Z ]*$/',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['error' => $validator->errors()], 400);
         }
         $estadoIncubadora->estado = $request->estado;
         $estadoIncubadora->save();
-        return response()->json(['estadoIncubadora actualizado']);
+        return response()->json(['estadoIncubadora actualizado'], 200);
     }
 
     public function destroy($id)

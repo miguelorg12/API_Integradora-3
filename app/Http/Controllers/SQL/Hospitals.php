@@ -20,11 +20,11 @@ class Hospitals extends Controller
 
         if ($user->id_rol == 1) {
             $hospitals = Hospital::all();
-            return response()->json(['Hospitales' => $hospitals]);
+            return response()->json(['Hospitales' => $hospitals], 200);
         } else {
             $hospitals = Hospital::where('id', $user->id_hospital)->get();
         }
-        return response()->json(['Hospitales' => $hospitals]);
+        return response()->json(['Hospitales' => $hospitals], 200);
     }
 
     public function hospitals()
@@ -32,16 +32,16 @@ class Hospitals extends Controller
         $hospitals = Hospital::where('is_active', true)
             ->where('nombre', '!=', 'Hospital General')
             ->get();
-        return response()->json(['Hospitales' => $hospitals]);
+        return response()->json(['Hospitales' => $hospitals], 200);
     }
 
     public function show(Request $request)
     {
         $hospital = Hospital::where('id', $request->id)->first();
         if (!$hospital) {
-            return response()->json(['msg' => 'Hospital no encontrado']);
+            return response()->json(['msg' => 'Hospital no encontrado'], 404);
         }
-        return response()->json(['msg' => 'Hospital', 'data' => $hospital]);
+        return response()->json(['msg' => 'Hospital', 'data' => $hospital], 200);
     }
 
     public function store(Request $request)
@@ -59,14 +59,14 @@ class Hospitals extends Controller
         $hospital->direccion = $request->direccion;
         $hospital->telefono = $request->telefono;
         $hospital->save();
-        return response()->json(['msg' => 'Hospital creado']);
+        return response()->json(['msg' => 'Hospital creado'], 201);
     }
 
     public function update(Request $request, $id)
     {
         $hospital = Hospital::where('id', $id)->where('is_active', true)->first();
         if (!$hospital) {
-            return response()->json(['msg' => 'Hospital no encontrado']);
+            return response()->json(['msg' => 'Hospital no encontrado'], 404);
         }
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
@@ -80,17 +80,17 @@ class Hospitals extends Controller
         $hospital->direccion = $request->direccion;
         $hospital->telefono = $request->telefono;
         $hospital->save();
-        return response()->json(['msg' => 'Hospital actualizado']);
+        return response()->json(['msg' => 'Hospital actualizado'], 200);
     }
 
     public function destroy($id)
     {
         $hospital = Hospital::where('id', $id)->where('is_active', true)->first();
         if (!$hospital) {
-            return response()->json(['msg' => 'Hospital no encontrado']);
+            return response()->json(['msg' => 'Hospital no encontrado'], 404);
         }
         $hospital->is_active = false;
         $hospital->save();
-        return response()->json(['msg' => 'Hospital eliminado']);
+        return response()->json(['msg' => 'Hospital eliminado'], 200);
     }
 }

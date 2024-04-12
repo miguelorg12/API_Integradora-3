@@ -13,16 +13,16 @@ class Sensoress extends Controller
     public function index()
     {
         $sensors = Sensores::all();
-        return response()->json(['msg' => 'Sensores', 'data' => $sensors]);
+        return response()->json(['msg' => 'Sensores', 'data' => $sensors], 200);
     }
 
     public function show($id)
     {
         $sensor = Sensores::where('id', $id)->first();
         if (!$sensor) {
-            return response()->json(['msg' => 'Sensor no encontrado']);
+            return response()->json(['msg' => 'Sensor no encontrado'], 404);
         }
-        return response()->json(['msg' => 'Sensor', 'data' => $sensor]);
+        return response()->json(['msg' => 'Sensor', 'data' => $sensor], 200);
     }
 
     public function store(Request $request)
@@ -38,14 +38,14 @@ class Sensoress extends Controller
         $sensor->nombre = $request->nombre;
         $sensor->unidad = $request->unidad;
         $sensor->save();
-        return response()->json(['msg' => 'Sensor creado']);
+        return response()->json(['msg' => 'Sensor creado'], 201);
     }
 
     public function update(Request $request, $id)
     {
         $sensor = Sensores::where('id', $id)->first();
         if (!$sensor) {
-            return response()->json(['msg' => 'Sensor no encontrado']);
+            return response()->json(['msg' => 'Sensor no encontrado'], 404);
         }
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:1|max:100|regex:/^[a-zA-Z0-9 ]*$/',
@@ -57,23 +57,23 @@ class Sensoress extends Controller
         $sensor->nombre = $request->nombre;
         $sensor->unidad = $request->unidad;
         $sensor->save();
-        return response()->json(['msg' => 'Sensor actualizado']);
+        return response()->json(['msg' => 'Sensor actualizado'], 200);
     }
 
     public function destroy($id)
     {
         $sensor = Sensores::where('id', $id)->first();
         if (!$sensor) {
-            return response()->json(['msg' => 'Sensor no encontrado']);
+            return response()->json(['msg' => 'Sensor no encontrado'], 404);
         }
         $sensor->is_active = false;
         $sensor->save();
-        return response()->json(['msg' => 'Sensor eliminado']);
+        return response()->json(['msg' => 'Sensor eliminado'], 200);
     }
 
     public function message(Request $request)
     {
         event(new testWebsocket($request->all()));
-        return response()->json(['msg' => $request->all()]);
+        return response()->json(['msg' => $request->all()], 200);
     }
 }
