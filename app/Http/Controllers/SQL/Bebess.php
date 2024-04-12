@@ -44,18 +44,58 @@ class Bebess extends Controller
         if ($user->id_rol == 1) {
             $bebes = DB::table('bebes')
                 ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
-                ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+                ->join('hospitals', 'bebes.id_hospital', '=', 'hospitals.id')
+                ->join('estados_del_bebes', 'bebes.id_estado', '=', 'estados_del_bebes.id')
+                ->select(
+                    'bebes.*',
+                    'estado_del_bebes.estado',
+                    'incubadoras.id',
+                    'hospitals.id as id_hospital',
+                    'hospitals.nombre as hospital'
+                )
                 ->where('bebes.id_incubadora', $id_incubadora)
                 ->get();
         }
         $bebes = DB::table('bebes')
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('hospitals', 'bebes.id_hospital', '=', 'hospitals.id')
-            ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+            ->join('estados_del_bebes', 'bebes.id_estado', '=', 'estados_del_bebes.id')
+            ->select(
+                'bebes.*',
+                'estado_del_bebes.estado',
+                'incubadoras.id',
+                'hospitals.id as id_hospital',
+                'hospitals.nombre as hospital'
+            )
             ->where('bebes.id_incubadora', $id_incubadora)
             ->where('hospitals.id', 'incubadoras.id_hospital')
+            ->where('hospitals.id', $user->id_hospital)
             ->get();
         return response()->json(['Bebes' => $bebes], 200);
+    }
+
+    public function bebefull($id)
+    {
+        $bebe = Bebes::where('id', $id)->first();
+        if (!$bebe) {
+            return response()->json(['msg' => 'Bebe no encontrado'], 404);
+        }
+        $bebe = DB::table('bebes')
+            ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
+            ->join('estado_del_bebes', 'bebes.id_estado', '=', 'estado_del_bebes.id')
+            ->join('historial_medicos', 'bebes.id', '=', 'historial_medicos.id_bebe')
+            ->join('contacto_familiars', 'bebes.id', '=', 'contacto_familiars.id_bebe')
+            ->select(
+                'bebes.*',
+                'estado_del_bebes.estado',
+                'incubadoras.id',
+                'historial_medicos.*',
+                'contacto_familiars.*'
+            )
+            ->where('bebes.id', $id)
+            ->where('bebes.id_estado', '!=', 3)
+            ->get();
+        return response()->json(['Bebe' => $bebe], 200);
     }
 
     public function show(Request $request)

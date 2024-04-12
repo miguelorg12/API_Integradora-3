@@ -24,11 +24,6 @@ class ResetPassword extends Mailable
         $this->signedUrl = $signedUrl;
     }
 
-    public function build()
-    {
-        return $this->subject('Restablecer tu contraseña')
-            ->view('emails.reset_password');
-    }
 
     /**
      * Get the message envelope.

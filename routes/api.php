@@ -53,7 +53,7 @@ Route::prefix('auth')->group(function ($router) {
         ->name('checkActive');
     Route::post('verifyToken', [AuthController::class, 'verifyToken']);
     Route::post('restablecer', [AuthController::class, 'restablecer']);
-    Route::get('recoveryPassword/{user}', [AuthController::class, 'recoveryPassword'])->name('recoveryPassword');
+    Route::get('recoveryPassword/{user}', [AuthController::class, 'recoveryPassword'])->name('recoveryPassword')->middleware('signed');
 });
 
 //Rutas Usuarios
@@ -112,6 +112,7 @@ Route::prefix('bebes')->group(function ($router) {
     Route::get('/oneBebe/{id}', [Bebess::class, 'show'])->where('id', '[0-9]+')->middleware('roles');
     Route::post('/create', [BebesHibrido::class, 'store'])->middleware('roles');
     Route::put('/update/{id}', [Bebess::class, 'update'])->where('id', '[0-9]+')->middleware('roles');
+    Route::get('/bebefull/{id}', [Bebess::class, 'bebefull'])->where('id', '[0-9]+')->middleware('roles');
     Route::delete('/delete/{id}', [Bebess::class, 'destroy'])->where('id', '[0-9]+')->middleware('roles');
 });
 
