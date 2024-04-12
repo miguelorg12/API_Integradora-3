@@ -91,7 +91,13 @@ class Bebess extends Controller
                 'estado_del_bebes.estado',
                 'incubadoras.id',
                 'historial_medicos.*',
-                'contacto_familiars.*'
+                'contacto_familiars.nombre as nombre_familiar',
+                'contacto_familiars.apellido as apellido_familiar',
+                'contacto_familiars.telefono as telefono_familiar',
+                'contacto_familiars.email as correo_familiar',
+                'contacto_familiars.id as id_contactoFamiliar',
+                'contacto_familiars.is_active as is_active_contactoFamiliar',
+                'contacto_familiars.id_bebe as id_bebe_contactoFamiliar',
             )
             ->where('bebes.id', $id)
             ->where('bebes.id_estado', '!=', 3)
