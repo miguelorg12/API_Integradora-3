@@ -74,6 +74,7 @@ class Bebess extends Controller
         return response()->json(['Bebes' => $bebes], 200);
     }
 
+
     public function bebefull($id)
     {
         $bebe = Bebes::where('id', $id)->first();
@@ -95,6 +96,9 @@ class Bebess extends Controller
             ->where('bebes.id', $id)
             ->where('bebes.id_estado', '!=', 3)
             ->get();
+        if ($bebe->isEmpty()) {
+            return response()->json(['msg' => 'No se encontraron datos'], 404);
+        }
         return response()->json(['Bebe' => $bebe], 200);
     }
 
