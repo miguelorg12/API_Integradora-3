@@ -11,8 +11,8 @@ class Sensores extends Model
     protected $table = 'sensores';
     protected $fillable = ['nombre', 'unidad', 'folio'];
 
-    public function sensores_incubadoras()
+    public function incubadoras()
     {
-        return $this->hasMany(Sensores_Incubadoras::class);
+        return $this->belongsToMany(Incubadora::class, 'sensores__incubadoras', 'id_sensor', 'id_incubadora');
     }
 }
