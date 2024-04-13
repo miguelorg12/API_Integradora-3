@@ -101,6 +101,7 @@ Route::prefix('incubadora')->group(function ($router) {
     Route::get('incubadoras', [Incubadoras::class, 'Incubadoras'])->middleware('roles');
     Route::get('/oneIncubadora/{id}', [Incubadoras::class, 'show'])->where('id', '[0-9]+')->middleware('admins');
     Route::get('/incubadorasDisponibles', [Incubadoras::class, 'incubadorasDisponibles'])->middleware('admins');
+    Route::get('/incubadorasOcupadas', [Incubadoras::class, 'indexBebesIncubadoras'])->middleware('roles');
     Route::post('/create', [IncubadorasHibrido::class, 'store'])->middleware('admins');
     Route::put('/update/{id}', [Incubadoras::class, 'update'])->where('id', '[0-9]+')->middleware('admins');
     Route::delete('/delete/{id}', [Incubadoras::class, 'destroy'])->where('id', '[0-9]+')->middleware('admins');

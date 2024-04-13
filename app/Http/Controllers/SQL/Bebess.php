@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bebes;
 use App\Models\Incubadora;
+use App\Models\ContactoFamiliar;
+use App\Models\HistorialMedico;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -81,31 +83,37 @@ class Bebess extends Controller
         if (!$bebe) {
             return response()->json(['msg' => 'Bebe no encontrado'], 404);
         }
-        $bebe = DB::table('bebes')
+
+        $contactos = DB::table('contacto_familiars')
+            ->where('id_bebe', $id)
+            ->where('is_active', true)
+            ->get([
+                'nombre as nombre',
+                'apellido as apellido',
+                'telefono as telefono',
+                'email',
+                'id as id_contactoFamiliar',
+                'is_active as is_active_contactoFamiliar',
+            ]);
+
+        $historial = DB::table('historial_medicos')
+            ->where('id_bebe', $id)
+            ->get();
+
+        $bebeDetails = DB::table('bebes')
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('estado_del_bebes', 'bebes.id_estado', '=', 'estado_del_bebes.id')
-            ->join('historial_medicos', 'bebes.id', '=', 'historial_medicos.id_bebe')
-            ->join('contacto_familiars', 'bebes.id', '=', 'contacto_familiars.id_bebe')
-            ->select(
-                'bebes.*',
-                'estado_del_bebes.estado',
-                'incubadoras.id',
-                'historial_medicos.*',
-                'contacto_familiars.nombre as nombre_familiar',
-                'contacto_familiars.apellido as apellido_familiar',
-                'contacto_familiars.telefono as telefono_familiar',
-                'contacto_familiars.email as correo_familiar',
-                'contacto_familiars.id as id_contactoFamiliar',
-                'contacto_familiars.is_active as is_active_contactoFamiliar',
-                'contacto_familiars.id_bebe as id_bebe_contactoFamiliar',
-            )
+            ->select('bebes.*', 'estado_del_bebes.estado', 'incubadoras.id')
             ->where('bebes.id', $id)
             ->where('bebes.id_estado', '!=', 3)
-            ->get();
-        if ($bebe->isEmpty()) {
-            return response()->json(['msg' => 'No se encontraron datos'], 404);
-        }
-        return response()->json(['Bebe' => $bebe], 200);
+            ->where('bebes.id_estado', '!=', 2)
+            ->first();
+
+        return response()->json([
+            'Bebe' => $bebeDetails,
+            'Contactos' => $contactos,
+            'Historial' => $historial
+        ], 200);
     }
 
     public function show(Request $request)

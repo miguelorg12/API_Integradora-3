@@ -65,6 +65,36 @@ class Incubadoras extends Controller
         return response()->json(['Incubadoras' => $incubadoras], 200);
     }
 
+    public function indexBebesIncubadoras(){
+        $user = auth()->user();
+        $incubadoras = DB::table('incubadoras')
+            ->where('incubadoras.is_active', true)
+            ->where('incubadoras.is_occupied', true)
+            ->get();
+
+        if ($user->id_rol == 1) {
+            foreach ($incubadoras as $incubadora) {
+                $incubadora->id_bebe = DB::table('bebes')
+                    ->where('id_incubadora', $incubadora->id)
+                    ->where('id_estado', 1)
+                    ->pluck('id')
+                    ->first();
+            }
+        } else {
+            foreach ($incubadoras as $incubadora) {
+                $incubadora->id_bebe = DB::table('bebes')
+                    ->where('id_incubadora', $incubadora->id)
+                    ->where('id_estado', 1)
+                    ->where('id_hospital', $user->id_hospital)
+                    ->pluck('id')
+                    ->first();
+            }
+        }
+
+        return response()->json(['Incubadoras' => $incubadoras], 200);
+    }
+
+
     public function index()
     {
         $user = auth()->user();
