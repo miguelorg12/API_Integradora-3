@@ -65,7 +65,8 @@ class Incubadoras extends Controller
         return response()->json(['Incubadoras' => $incubadoras], 200);
     }
 
-    public function indexBebesIncubadoras(){
+    public function indexBebesIncubadoras()
+    {
         $user = auth('api_jwt')->user();
         $incubadoras = DB::table('incubadoras')
             ->where('incubadoras.is_active', true)
@@ -192,11 +193,11 @@ class Incubadoras extends Controller
             $incubadora->id_estado = $request->id_estado;
             $incubadora->save();
             $sensores = $request->input('id_sensores');
-        }
-        else{
+        } else {
             $incubadora = new Incubadora;
             $incubadora->id_hospital = $user->id_hospital;
             $incubadora->id_estado = $request->id_estado;
+            $incubadora->folio = rand(100, 999);
             $incubadora->save();
             $sensores = $request->input('id_sensores');
         }
@@ -235,10 +236,9 @@ class Incubadoras extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-        if ($user -> id_rol == 1){
+        if ($user->id_rol == 1) {
             $incubadora->id_hospital = $request->id_hospital;
-        }
-        else {
+        } else {
             $incubadora->id_hospital = $user->id_hospital;
         }
         $incubadora->is_active = $request->is_active;
