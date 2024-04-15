@@ -19,7 +19,7 @@ class Incubadoras extends Controller
 
     public function indexwithBabys()
     {
-        $user = auth()->user();
+        $user = auth('api_jwt')->user();
         if ($user->id_rol == 1) {
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'hospitals.id', '=', 'incubadoras.id_hospital')
@@ -66,7 +66,7 @@ class Incubadoras extends Controller
     }
 
     public function indexBebesIncubadoras(){
-        $user = auth()->user();
+        $user = auth('api_jwt')->user();
         $incubadoras = DB::table('incubadoras')
             ->where('incubadoras.is_active', true)
             ->where('incubadoras.is_occupied', true)
@@ -97,8 +97,8 @@ class Incubadoras extends Controller
 
     public function index()
     {
-        $user = auth()->user();
-        if ($user->id_rol === 1) {
+        $user = auth('api_jwt')->user();
+        if ($user->id_rol == 1) {
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
                 ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
@@ -111,7 +111,6 @@ class Incubadoras extends Controller
         } else {
             $incubadoras = DB::table('incubadoras')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
-                ->join('bebes', 'bebes.id_incubadora', '=', 'incubadoras.id')
                 ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
                 ->select(
                     'incubadoras.*',
@@ -180,18 +179,27 @@ class Incubadoras extends Controller
 
     public function store(Request $request)
     {
+        $user = auth('api_jwt')->user();
         $validator = Validator::make($request->all(), [
-            'id_hospital' => 'required|integer|exists:hospitals,id',
-            'id_estado' => 'required|integer|exists:estado_incubadoras,id',
+            'id_estado' => 'required|integer',
         ]);
         if ($validator->fails()) {
             return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
-        $incubadora = new Incubadora;
-        $incubadora->id_hospital = $request->id_hospital;
-        $incubadora->id_estado = $request->id_estado;
-        $incubadora->save();
-        $sensores = $request->input('id_sensores');
+        if ($user->id_rol == 1) {
+            $incubadora = new Incubadora;
+            $incubadora->id_hospital = $request->id_hospital;
+            $incubadora->id_estado = $request->id_estado;
+            $incubadora->save();
+            $sensores = $request->input('id_sensores');
+        }
+        else{
+            $incubadora = new Incubadora;
+            $incubadora->id_hospital = $user->id_hospital;
+            $incubadora->id_estado = $request->id_estado;
+            $incubadora->save();
+            $sensores = $request->input('id_sensores');
+        }
         foreach ($sensores as $sensorId) {
             $sensor = Sensores::find($sensorId);
             if ($sensor) {
@@ -238,17 +246,13 @@ class Incubadoras extends Controller
         $incubadora->id_estado = $request->id_estado;
         $incubadora->is_occupied = $request->get('is_occupied');
         $incubadora->save();
-
         $sensores_ids = $request->input('id_sensores');
         $syncData = [];
-
         foreach ($sensores_ids as $sensorId) {
             $folio = rand(100, 999) . 'S';
             $syncData[$sensorId] = ['folio' => $folio];
         }
-
         $incubadora->sensores()->sync($syncData);
-
         return response()->json(['msg' => 'Incubadora actualizada'], 200);
     }
 

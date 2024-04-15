@@ -111,6 +111,7 @@ Route::prefix('incubadora')->group(function ($router) {
 Route::prefix('bebes')->group(function ($router) {
     Route::get('/list', [Bebess::class, 'index'])->middleware('roles');
     Route::get('/oneBebe/{id}', [Bebess::class, 'show'])->where('id', '[0-9]+')->middleware('roles');
+    Route::get('/bebesnHistorial',[Bebess::class, 'bebesSinHistorial'])->middleware('roles');
     Route::post('/create', [BebesHibrido::class, 'store'])->middleware('roles');
     Route::put('/update/{id}', [Bebess::class, 'update'])->where('id', '[0-9]+')->middleware('roles');
     Route::get('/bebefull/{id}', [Bebess::class, 'bebefull'])->where('id', '[0-9]+')->middleware('roles');

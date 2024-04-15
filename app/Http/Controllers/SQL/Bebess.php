@@ -39,7 +39,11 @@ class Bebess extends Controller
             ->get();
         return response()->json(['Bebes' => $bebes], 200);
     }
-
+    public function bebesSinHistorial()
+    {
+        $bebes = Bebes::doesntHave('historial')->get();
+        return response()->json(['Bebes' => $bebes], 200);
+    }
     public function bebeIncubadora($id_incubadora)
     {
         $user = auth()->user();

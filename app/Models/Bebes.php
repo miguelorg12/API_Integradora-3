@@ -18,7 +18,7 @@ class Bebes extends Model
 
     public function historial()
     {
-        return $this->hasOne(HistorialMedico::class);
+        return $this->hasOne(HistorialMedico::class, 'id_bebe');
     }
 
     public function contactoFamiliar()
