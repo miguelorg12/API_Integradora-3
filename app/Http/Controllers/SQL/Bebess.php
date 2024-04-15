@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bebes;
 use App\Models\Incubadora;
+use App\Models\ContactoFamiliar;
+use App\Models\HistorialMedico;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -44,18 +46,74 @@ class Bebess extends Controller
         if ($user->id_rol == 1) {
             $bebes = DB::table('bebes')
                 ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
-                ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+                ->join('hospitals', 'bebes.id_hospital', '=', 'hospitals.id')
+                ->join('estados_del_bebes', 'bebes.id_estado', '=', 'estados_del_bebes.id')
+                ->select(
+                    'bebes.*',
+                    'estado_del_bebes.estado',
+                    'incubadoras.id',
+                    'hospitals.id as id_hospital',
+                    'hospitals.nombre as hospital'
+                )
                 ->where('bebes.id_incubadora', $id_incubadora)
                 ->get();
         }
         $bebes = DB::table('bebes')
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('hospitals', 'bebes.id_hospital', '=', 'hospitals.id')
-            ->select('bebes.*', 'incubadoras.id', 'incubadoras.nombre as incubadora', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+            ->join('estados_del_bebes', 'bebes.id_estado', '=', 'estados_del_bebes.id')
+            ->select(
+                'bebes.*',
+                'estado_del_bebes.estado',
+                'incubadoras.id',
+                'hospitals.id as id_hospital',
+                'hospitals.nombre as hospital'
+            )
             ->where('bebes.id_incubadora', $id_incubadora)
             ->where('hospitals.id', 'incubadoras.id_hospital')
+            ->where('hospitals.id', $user->id_hospital)
             ->get();
         return response()->json(['Bebes' => $bebes], 200);
+    }
+
+
+    public function bebefull($id)
+    {
+        $bebe = Bebes::where('id', $id)->first();
+        if (!$bebe) {
+            return response()->json(['msg' => 'Bebe no encontrado'], 404);
+        }
+
+        $contactos = DB::table('contacto_familiars')
+            ->where('id_bebe', $id)
+            ->where('is_active', true)
+            ->get([
+                'nombre as nombre',
+                'apellido as apellido',
+                'telefono as telefono',
+                'email',
+                'id as id_contactoFamiliar',
+                'is_active as is_active_contactoFamiliar',
+            ]);
+
+        $historial = DB::table('historial_medicos')
+            ->where('id_bebe', $id)
+            ->get();
+
+        $bebeDetails = DB::table('bebes')
+            ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
+            ->join('estado_del_bebes', 'bebes.id_estado', '=', 'estado_del_bebes.id')
+            ->select('bebes.*', 'estado_del_bebes.estado', 'incubadoras.id')
+            ->where('bebes.id', $id)
+            ->where('bebes.id_estado', '!=', 3)
+            ->where('bebes.id_estado', '!=', 2)
+            ->first();
+
+        return response()->json([
+            'Bebe' => $bebeDetails,
+            'Contactos' => $contactos,
+            'Historial' => $historial
+        ], 200);
     }
 
     public function show(Request $request)

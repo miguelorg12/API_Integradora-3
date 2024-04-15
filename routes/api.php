@@ -53,7 +53,7 @@ Route::prefix('auth')->group(function ($router) {
         ->name('checkActive');
     Route::post('verifyToken', [AuthController::class, 'verifyToken']);
     Route::post('restablecer', [AuthController::class, 'restablecer']);
-    Route::get('recoveryPassword/{user}', [AuthController::class, 'recoveryPassword'])->name('recoveryPassword');
+    Route::get('recoveryPassword/{user}', [AuthController::class, 'recoveryPassword'])->name('recoveryPassword')->middleware('signed');
 });
 
 //Rutas Usuarios
@@ -101,6 +101,7 @@ Route::prefix('incubadora')->group(function ($router) {
     Route::get('incubadoras', [Incubadoras::class, 'Incubadoras'])->middleware('roles');
     Route::get('/oneIncubadora/{id}', [Incubadoras::class, 'show'])->where('id', '[0-9]+')->middleware('admins');
     Route::get('/incubadorasDisponibles', [Incubadoras::class, 'incubadorasDisponibles'])->middleware('admins');
+    Route::get('/incubadorasOcupadas', [Incubadoras::class, 'indexBebesIncubadoras'])->middleware('roles');
     Route::post('/create', [IncubadorasHibrido::class, 'store'])->middleware('admins');
     Route::put('/update/{id}', [Incubadoras::class, 'update'])->where('id', '[0-9]+')->middleware('admins');
     Route::delete('/delete/{id}', [Incubadoras::class, 'destroy'])->where('id', '[0-9]+')->middleware('admins');
@@ -112,6 +113,7 @@ Route::prefix('bebes')->group(function ($router) {
     Route::get('/oneBebe/{id}', [Bebess::class, 'show'])->where('id', '[0-9]+')->middleware('roles');
     Route::post('/create', [BebesHibrido::class, 'store'])->middleware('roles');
     Route::put('/update/{id}', [Bebess::class, 'update'])->where('id', '[0-9]+')->middleware('roles');
+    Route::get('/bebefull/{id}', [Bebess::class, 'bebefull'])->where('id', '[0-9]+')->middleware('roles');
     Route::delete('/delete/{id}', [Bebess::class, 'destroy'])->where('id', '[0-9]+')->middleware('roles');
 });
 
