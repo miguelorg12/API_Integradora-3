@@ -20,6 +20,7 @@ use App\Http\Controllers\IncubadorasHibrido;
 use App\Http\Controllers\SensoresHibrido;
 use App\Http\Controllers\SensoresIncubadorasHibrido;
 use App\Http\Controllers\SQL\Hospitals;
+use App\Http\Controllers\Mongo\Values;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/server', 'serverController@index');
 
+Route::get('/values', [Values::class, 'index']);
 
 //Rutas Usuario
 Route::prefix('auth')->group(function ($router) {
