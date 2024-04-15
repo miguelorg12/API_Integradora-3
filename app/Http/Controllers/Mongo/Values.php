@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class Values extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api_jwt');
+    }
+
     /**
      * Display a listing of the resource.
      *
