@@ -191,6 +191,7 @@ class Incubadoras extends Controller
             $incubadora = new Incubadora;
             $incubadora->id_hospital = $request->id_hospital;
             $incubadora->id_estado = $request->id_estado;
+            $incubadora->folio = rand(100, 999);
             $incubadora->save();
             $sensores = $request->input('id_sensores');
         } else {
