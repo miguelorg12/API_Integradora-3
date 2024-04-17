@@ -21,6 +21,8 @@ use App\Http\Controllers\SensoresHibrido;
 use App\Http\Controllers\SensoresIncubadorasHibrido;
 use App\Http\Controllers\SQL\Hospitals;
 use App\Http\Controllers\Mongo\Values;
+use App\Http\Controllers\Activador\BuzzerController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -164,4 +166,8 @@ Route::prefix('sensoresIncubadoras')->group(function ($router) {
     Route::post('/create', [SensoresIncubadorasHibrido::class, 'store'])->middleware('developer');
     Route::put('/update/{id}', [SensoresIncubadorass::class, 'update'])->where('id', '[0-9]+')->middleware('developer');
     Route::delete('/delete/{id}', [SensoresIncubadorass::class, 'destroy'])->where('id', '[0-9]+')->middleware('developer');
+});
+
+Route::prefix('Activador')->group(function ($router) {
+    Route::get('/buzzer/{state}', [BuzzerController::class, 'activate']);
 });
