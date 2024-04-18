@@ -17,11 +17,11 @@ class Sensores extends Seeder
     {
         $sensores = [
             ['nombre' => 'Sensor de Temperatura', 'unidad' => '°C'],
-            ['nombre' => 'Sensor de Humedad', 'unidad' => '%'],
             ['nombre' => 'Sensor de Pulso', 'unidad' => 'BPM'],
             ['nombre' => 'Sensor de Calidad de Aire', 'unidad' => 'ppm'],
             ['nombre' => 'Sensor de Sonido', 'unidad' => 'dB'],
             ['nombre' => 'Microfono', 'unidad' => 'dB'],
+            ['nombre' => 'Buzzer' , 'Unidad' => 'db']
         ];
 
         foreach ($sensores as $sensor) {
