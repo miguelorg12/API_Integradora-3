@@ -10,7 +10,7 @@ class Values extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api_jwt');
+        $this->middleware('auth:api_jwt', ['except' => ['index']]);
     }
 
     /**
@@ -21,8 +21,19 @@ class Values extends Controller
 
     public function index()
     {
-        $values = Value::orderBy('_id', 'asc')->skip(0)->get();
-        return $values->slice(-6);
+        $values = Value::orderBy('_id', 'desc')
+            ->whereNotNull('name')
+            ->where('name', '!=', 'e')
+            ->where('name', '!=', '')
+            ->where('name', '!=', 'Pu')
+            ->where('name', '!=', 'Te')
+            ->get()
+            ->groupBy('name')
+            ->map(function ($group) {
+                return $group->first();
+            })
+            ->slice(-7);
+        return $values;
     }
 
     /**
