@@ -26,7 +26,7 @@ class Bebess extends Controller
                 ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
                 ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
                 ->join('estado_del_bebes', 'bebes.id_estado', '=', 'estado_del_bebes.id')
-                ->select('bebes.*', 'estado_del_bebes.estado', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+                ->select('bebes.*', 'estado_del_bebes.estado', 'hospitals.nombre as hospital')
                 ->get();
             return response()->json(['Bebes' => $bebes], 200);
         }
@@ -34,7 +34,7 @@ class Bebess extends Controller
             ->join('incubadoras', 'bebes.id_incubadora', '=', 'incubadoras.id')
             ->join('hospitals', 'incubadoras.id_hospital', '=', 'hospitals.id')
             ->join('estado_del_bebes', 'bebes.id_estado', '=', 'estado_del_bebes.id')
-            ->select('bebes.*', 'estado_del_bebes.estado', 'hospitals.id as id_hospital', 'hospitals.nombre as hospital')
+            ->select('bebes.*', 'estado_del_bebes.estado', 'hospitals.nombre as hospital')
             ->where('hospitals.id', $user->id_hospital)
             ->get();
         return response()->json(['Bebes' => $bebes], 200);
@@ -126,7 +126,7 @@ class Bebess extends Controller
         if (!$bebe) {
             return response()->json(['msg' => 'Bebe no encontrado'], 404);
         }
-        return response()->json(['Bebe' => $bebe, 200]);
+        return response()->json(['Bebe' => $bebe], 200);
     }
 
     public function store(Request $request)

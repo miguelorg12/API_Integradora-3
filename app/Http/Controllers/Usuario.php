@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Events\UpdateUser;
 
 class Usuario extends Controller
 {
@@ -24,7 +25,6 @@ class Usuario extends Controller
                 ->join('hospitals', 'users.id_hospital', '=', 'hospitals.id')
                 ->orderBy('users.id', 'asc')
                 ->select('users.id', 'users.name', 'users.last_name', 'users.email', 'users.is_active', 'rols.nombre as rol', 'hospitals.nombre as hospital')
-                ->where('users.is_active', true)
                 ->where('users.id', '!=', 1)
                 ->get();
             return response()->json(['msg' => 'Usuarios', 'data' => $users], 200);
@@ -34,7 +34,6 @@ class Usuario extends Controller
                 ->join('hospitals', 'users.id_hospital', '=', 'hospitals.id')
                 ->select('users.id', 'users.name', 'users.last_name', 'users.email', 'users.is_active', 'rols.nombre as rol', 'hospitals.nombre as hospital')
                 ->where('rols.id', '!=', 1)
-                ->where('users.is_active', true)
                 ->get();
             return response()->json(['msg' => 'Usuarios', 'data' => $users], 200);
         }
@@ -93,7 +92,8 @@ class Usuario extends Controller
 
         if ($usuario->id_rol == 1) {
             $user = User::where('id', $request->id)->first();
-        } elseif ($usuario->id_rol == 2) {
+        } 
+        else if ($usuario->id_rol == 2) {
             $user = User::where('id', $request->id)->where('id_hospital', $usuario->id_hospital)->where('is_active', 1)->first();
             if (!$user) {
                 return response()->json(['msg' => 'Usuario no encontrado'], 404);
@@ -109,7 +109,9 @@ class Usuario extends Controller
                 'name' => 'required|string|max:100|min:3|regex:/^[a-zA-Z ]*$/',
                 'last_name' => 'required|string|max:100|min:3|regex:/^[a-zA-Z ]*$/',
                 'id_rol' => 'required|integer|exists:rols,id',
-                'id_hospital' => 'required|integer|exists:hospitals,id'
+                'id_hospital' => 'required|integer|exists:hospitals,id',
+                'is_active' => 'required|boolean'
+                
             ]);
 
             if ($validator->fails()) {
@@ -119,7 +121,9 @@ class Usuario extends Controller
             $user->last_name = $request->last_name;
             $user->id_rol = $request->id_rol;
             $user->id_hospital = $request->id_hospital;
+            $user->is_active = $request->is_active;
             $user->save();
+            event(new UpdateUser($user->id, $user->is_active, $user->id_rol,));
             return response()->json(['msg' => 'Usuario actualizado'], 200);
         } else {
             $validator = Validator::make($request->all(), [
@@ -149,6 +153,7 @@ class Usuario extends Controller
         }
         $user->is_active = 0;
         $user->save();
+        event(new UpdateUser($user->id, $user->is_active, $user->id_rol));
         return response()->json(['msg' => 'Usuario eliminado'], 200);
     }
 

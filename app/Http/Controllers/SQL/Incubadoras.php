@@ -68,28 +68,23 @@ class Incubadoras extends Controller
     public function indexBebesIncubadoras()
     {
         $user = auth('api_jwt')->user();
+
         $incubadoras = DB::table('incubadoras')
             ->where('incubadoras.is_active', true)
-            ->where('incubadoras.is_occupied', true)
-            ->get();
+            ->where('incubadoras.is_occupied', true);
 
-        if ($user->id_rol == 1) {
-            foreach ($incubadoras as $incubadora) {
-                $incubadora->id_bebe = DB::table('bebes')
-                    ->where('id_incubadora', $incubadora->id)
-                    ->where('id_estado', 1)
-                    ->pluck('id')
-                    ->first();
-            }
-        } else {
-            foreach ($incubadoras as $incubadora) {
-                $incubadora->id_bebe = DB::table('bebes')
-                    ->where('id_incubadora', $incubadora->id)
-                    ->where('id_estado', 1)
-                    ->where('id_hospital', $user->id_hospital)
-                    ->pluck('id')
-                    ->first();
-            }
+        if ($user->id_rol != 1) {
+            $incubadoras = $incubadoras->where('incubadoras.id_hospital', $user->id_hospital);
+        }
+
+        $incubadoras = $incubadoras->get();
+
+        foreach ($incubadoras as $incubadora) {
+            $incubadora->id_bebe = DB::table('bebes')
+                ->where('id_incubadora', $incubadora->id)
+                ->where('id_estado', 1)
+                ->pluck('id')
+                ->first();
         }
 
         return response()->json(['Incubadoras' => $incubadoras], 200);
@@ -115,7 +110,6 @@ class Incubadoras extends Controller
                 ->join('estado_incubadoras', 'incubadoras.id_estado', '=', 'estado_incubadoras.id')
                 ->select(
                     'incubadoras.*',
-                    'hospitals.id',
                     'hospitals.nombre as hospital',
                     'estado_incubadoras.estado as estado'
                 )
