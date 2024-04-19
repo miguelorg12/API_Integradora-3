@@ -9,7 +9,7 @@ class Incubadora extends Model
 {
     use HasFactory;
     protected $table = 'incubadoras';
-    protected $fillable = ['id_hospital', 'is_active', 'is_occupied', 'optimo'];
+    protected $fillable = ['id_hospital', 'is_active', 'is_occupied', 'optimo', 'folio'];
 
     public function hospital()
     {

@@ -11,15 +11,23 @@ class IncubadorasHibrido extends Controller
 {
     public function store(Request $request)
     {
+        $user = auth('api_jwt')->user();
         $validator = Validator::make($request->all(), [
-            'id_hospital' => 'required|integer|exists:hospitals,id',
             'id_estado' => 'required|integer|exists:estado_incubadoras,id',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['error' => $validator->errors()], 400);
         }
-        $mongoController = new MongoIncubadora;
-        $mongoController->store($request);
+        if ($user->id_ro == 1){
+            $mongoController = new MongoIncubadora;
+            $mongoController->store($request);
+        }
+        else{
+            $mongoController = new MongoIncubadora;
+            $request->id_hospital = $user->id_hospital;
+            $mongoController->store($request);  
+        }
+        
 
         $sqlController = new SQLIncubadora;
         $sqlController->store($request);

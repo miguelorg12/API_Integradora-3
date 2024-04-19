@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "mongodb/laravel-mongodb": "^3.9",
+        "mongodb/mongodb": "^1.12",
         "php-open-source-saver/jwt-auth": "^2.2",
         "pusher/pusher-php-server": "^7.2",
         "react/promise": "2.7"

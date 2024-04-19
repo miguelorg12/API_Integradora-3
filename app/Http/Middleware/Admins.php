@@ -16,9 +16,9 @@ class Admins
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth('api_jwt')->user()->id_rol == 1 || auth()->user()->id_rol == 2) {
+        if (auth('api_jwt')->user()->id_rol == 1 || auth('api_jwt')->user()->id_rol == 2) {
             return $next($request);
         }
-        return response()->json(['error' => 'No tines permiso para esta acción'], 401);
+        return response()->json(['error' => 'No tienes permiso para esta acción'], 401);
     }
 }

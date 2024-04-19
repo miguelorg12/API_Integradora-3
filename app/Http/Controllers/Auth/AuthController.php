@@ -100,7 +100,7 @@ class AuthController extends Controller
             $codigo->save();
         }
         Mail::to($email)->send(new Code($code));
-        return response()->json(['message' => 'Codigo enviado', 'password' => $user->password], 200);
+        return response()->json(['message' => 'Codigo enviado'], 200);
     }
 
     public function activate(User $user)

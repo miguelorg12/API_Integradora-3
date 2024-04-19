@@ -20,6 +20,9 @@ use App\Http\Controllers\IncubadorasHibrido;
 use App\Http\Controllers\SensoresHibrido;
 use App\Http\Controllers\SensoresIncubadorasHibrido;
 use App\Http\Controllers\SQL\Hospitals;
+use App\Http\Controllers\Mongo\Values;
+use App\Http\Controllers\Activador\BuzzerController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +41,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //Route::get('/server', 'serverController@index');
 
+Route::get('/values', [Values::class, 'index']);
+Route::post('/postvalues', [Values::class, 'store']);
 
 //Rutas Usuario
 Route::prefix('auth')->group(function ($router) {
@@ -111,6 +116,7 @@ Route::prefix('incubadora')->group(function ($router) {
 Route::prefix('bebes')->group(function ($router) {
     Route::get('/list', [Bebess::class, 'index'])->middleware('roles');
     Route::get('/oneBebe/{id}', [Bebess::class, 'show'])->where('id', '[0-9]+')->middleware('roles');
+    Route::get('/bebesnHistorial', [Bebess::class, 'bebesSinHistorial'])->middleware('roles');
     Route::post('/create', [BebesHibrido::class, 'store'])->middleware('roles');
     Route::put('/update/{id}', [Bebess::class, 'update'])->where('id', '[0-9]+')->middleware('roles');
     Route::get('/bebefull/{id}', [Bebess::class, 'bebefull'])->where('id', '[0-9]+')->middleware('roles');
@@ -161,4 +167,8 @@ Route::prefix('sensoresIncubadoras')->group(function ($router) {
     Route::post('/create', [SensoresIncubadorasHibrido::class, 'store'])->middleware('developer');
     Route::put('/update/{id}', [SensoresIncubadorass::class, 'update'])->where('id', '[0-9]+')->middleware('developer');
     Route::delete('/delete/{id}', [SensoresIncubadorass::class, 'destroy'])->where('id', '[0-9]+')->middleware('developer');
+});
+
+Route::prefix('Activador')->group(function ($router) {
+    Route::get('/buzzer/{state}', [BuzzerController::class, 'activate']);
 });

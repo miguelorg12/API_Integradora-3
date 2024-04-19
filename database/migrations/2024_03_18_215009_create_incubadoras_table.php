@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('is_occupied')->default(false);
             $table->unsignedBigInteger('id_estado');
             $table->foreign('id_estado')->references('id')->on('estado_incubadoras');
+            $table->string('folio', 100)->unique();
             $table->timestamps();
         });
     }
