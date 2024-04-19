@@ -32,7 +32,7 @@ class Aviso extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'URGENTE!!! Revisa tus Incubadoras',
+            subject: 'URGENTE Revisa tus Incubadoras!!!',
         );
     }
 
