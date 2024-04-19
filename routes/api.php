@@ -105,7 +105,7 @@ Route::prefix('incubadora')->group(function ($router) {
     Route::get('/list', [Incubadoras::class, 'index'])->middleware('roles');
     Route::get('incubadoras', [Incubadoras::class, 'Incubadoras'])->middleware('roles');
     Route::get('/oneIncubadora/{id}', [Incubadoras::class, 'show'])->where('id', '[0-9]+')->middleware('admins');
-    Route::get('/incubadorasDisponibles', [Incubadoras::class, 'incubadorasDisponibles'])->middleware('admins');
+    Route::get('/incubadorasDisponibles', [Incubadoras::class, 'incubadorasDisponibles'])->middleware('roles');
     Route::get('/incubadorasOcupadas', [Incubadoras::class, 'indexBebesIncubadoras'])->middleware('roles');
     Route::post('/create', [IncubadorasHibrido::class, 'store'])->middleware('admins');
     Route::put('/update/{id}', [Incubadoras::class, 'update'])->where('id', '[0-9]+')->middleware('admins');
@@ -156,7 +156,6 @@ Route::prefix('sensores')->group(function ($router) {
     Route::get('/oneSensor/{id}', [Sensoress::class, 'show'])->where('id', '[0-9]+')->middleware('developer');
     Route::post('/create', [SensoresHibrido::class, 'store'])->middleware('developer');
     Route::put('/update/{id}', [Sensoress::class, 'update'])->where('id', '[0-9]+')->middleware('developer');
-    Route::post('/message', [Sensoress::class, 'message']);
     Route::delete('/delete/{id}', [Sensoress::class, 'destroy'])->where('id', '[0-9]+')->middleware('developer');
 });
 

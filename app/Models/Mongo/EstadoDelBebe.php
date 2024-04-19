@@ -6,6 +6,8 @@ use Jenssegers\Mongodb\Eloquent\Model;
 
 class EstadoDelBebe extends Model
 {
+
+    public $timestamps = false;
     protected $connection = 'mongodb';
     protected $collection = 'estado_del_bebes';
     protected $fillable = ['estado'];

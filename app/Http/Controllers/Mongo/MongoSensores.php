@@ -12,7 +12,7 @@ class MongoSensores extends Controller
     {
         $sensores = new Sensores;
         $sensores->fill($request->all());
-        //$sensores->save();
+        $sensores->save();
         return response()->json(['message' => 'Sensores created in MongoDB'], 201);
     }
 }

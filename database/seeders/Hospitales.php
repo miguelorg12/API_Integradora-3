@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Hospital;
+use App\Models\Mongo\Hospital as MongoHospital;
 
 class Hospitales extends Seeder
 {
@@ -25,6 +26,7 @@ class Hospitales extends Seeder
 
         foreach ($hospitales as $hospital) {
             Hospital::create($hospital);
+            MongoHospital::create($hospital);
         }
     }
 }

@@ -18,16 +18,19 @@ class IncubadorasHibrido extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
-        if ($user->id_ro == 1){
+        $request->merge(['is_active' => true]);
+        $request->merge(['is_occupied' => false]);
+        $request->merge(['optimo' => true]);
+        $request->merge(['folio' => rand(100, 999)]);
+        if ($user->id_ro == 1) {
             $mongoController = new MongoIncubadora;
             $mongoController->store($request);
-        }
-        else{
+        } else {
             $mongoController = new MongoIncubadora;
-            $request->id_hospital = $user->id_hospital;
-            $mongoController->store($request);  
+            $request->merge(['id_hospital' => $user->id_hospital]);
+            $mongoController->store($request);
         }
-        
+
 
         $sqlController = new SQLIncubadora;
         $sqlController->store($request);

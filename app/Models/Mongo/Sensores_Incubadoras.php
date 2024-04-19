@@ -6,9 +6,11 @@ use Jenssegers\Mongodb\Eloquent\Model;
 
 class Sensores_Incubadoras extends Model
 {
+
+    public $timestamps = false;
     protected $connection = 'mongodb';
     protected $collection = 'sensores_incubadoras';
-    protected $fillable = ['id_incubadora', 'id_sensor'];
+    protected $fillable = ['id_incubadora', 'id_sensor', 'folio'];
 
     public function incubadora()
     {

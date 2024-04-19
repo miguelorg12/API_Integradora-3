@@ -12,7 +12,7 @@ class MongoHospital extends Controller
     {
         $hospital = new Hospital;
         $hospital->fill($request->all());
-        //$hospital->save();
+        $hospital->save();
         return response()->json(['message' => 'Hospital created in MongoDB'], 201);
     }
 }

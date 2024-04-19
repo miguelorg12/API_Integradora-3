@@ -7,9 +7,11 @@ use Jenssegers\Mongodb\Eloquent\Model;
 class Incubadora extends Model
 {
 
+
+    public $timestamps = false;
     protected $connection = 'mongodb';
     protected $collection = 'incubadoras';
-    protected $fillable = ['id_hospital', 'is_active', 'is_occupied', 'optimo'];
+    protected $fillable = ['id_hospital', 'is_active', 'is_occupied', 'optimo', 'folio'];
 
     public function hospital()
     {
