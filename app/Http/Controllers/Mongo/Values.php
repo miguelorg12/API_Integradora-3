@@ -12,7 +12,7 @@ class Values extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api_jwt', ['except' => ['index', 'store']]);
+        $this->middleware('auth:api_jwt', ['except' => ['store']]);
     }
 
     /**
