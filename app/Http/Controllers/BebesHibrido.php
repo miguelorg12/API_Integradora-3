@@ -18,8 +18,8 @@ class BebesHibrido extends Controller
             'fecha_nacimiento' => 'required|date',
             'edad' => 'required|integer',
             'peso' => 'required|numeric',
-            'id_estado' => 'required|integer',
-            'id_incubadora' => 'required|integer',
+            'id_estado' => 'required|integer|exists:estado_del_bebes,id',
+            'id_incubadora' => 'required|integer|exists:incubadoras,id',
         ]);
         if ($validator->fails()) {
             return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);

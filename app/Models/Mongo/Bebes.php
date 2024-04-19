@@ -9,6 +9,8 @@ use App\Models\ContactoFamiliar;
 
 class Bebes extends Model
 {
+
+    public $timestamps = false;
     protected $connection = 'mongodb';
     protected $collection = 'bebes';
     protected $fillable = ['id_incubadora', 'id_estado', 'nombre', 'apellido', 'peso', 'talla', 'fecha_nacimiento', 'sexo'];

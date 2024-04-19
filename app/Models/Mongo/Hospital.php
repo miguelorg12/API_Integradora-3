@@ -7,6 +7,8 @@ use App\Models\User;
 
 class Hospital extends Model
 {
+
+    public $timestamps = false;
     protected $connection = 'mongodb';
     protected $collection = 'hospitals';
     protected $fillable = ['nombre', 'direccion', 'telefono'];

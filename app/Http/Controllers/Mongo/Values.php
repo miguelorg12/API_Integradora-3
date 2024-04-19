@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Mongo;
 
+use App\Events\testWebsocket;
 use App\Http\Controllers\Controller;
 use App\Models\Value;
 use Illuminate\Http\Request;
+use App\Mail\Aviso;
+use Illuminate\Support\Facades\Mail;
 
 class Values extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api_jwt', ['except' => ['index']]);
+        $this->middleware('auth:api_jwt', ['except' => ['store']]);
     }
 
     /**
@@ -21,6 +24,7 @@ class Values extends Controller
 
     public function index()
     {
+        $user = auth('api_jwt')->user();
         $values = Value::orderBy('_id', 'desc')
             ->whereNotNull('name')
             ->where('name', '!=', 'e')
@@ -33,7 +37,26 @@ class Values extends Controller
                 return $group->first();
             })
             ->slice(-7);
-        return $values;
+
+        $shouldSendMail = false;
+        foreach ($values as $value) {
+            if ($value->name == 'te' && ($value->value > 40.00 || $value->value < 5.00)) {
+                $shouldSendMail = true;
+            }
+            if ($value->name == 'pu' && ($value->value > 500.00 || $value->value < 20.00)) {
+                $shouldSendMail = true;
+            }
+            if ($value->name == 'ca' && ($value->value > 900.00 || $value->value < 350.00)) {
+                $shouldSendMail = true;
+            }
+            if ($value->name == 'so' && $value->value > 700.00) {
+                $shouldSendMail = true;
+            }
+        }
+        if ($shouldSendMail) {
+            Mail::to($user->email)->send(new Aviso($user));
+        }
+        return response()->json(['msg' => 'Valores', 'data' => $values], 200);
     }
 
     /**
@@ -54,7 +77,14 @@ class Values extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $value = Value::create([
+            'name' => $request->name,
+            'unit' => $request->unit,
+            'value' => $request->value,
+        ]);
+        $message = 'Nuevo valor creado';
+        event(new testWebsocket($message));
+        return response()->json($value, 201);
     }
 
     /**
