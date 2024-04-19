@@ -6,6 +6,8 @@ use Jenssegers\Mongodb\Eloquent\Model;
 
 class Values extends Model
 {
+
+    public $timestamps = false;
     protected $connection = 'mongodb';
     protected $collection = 'values';
 

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\EstadoDelBebe;
+use App\Models\Mongo\EstadoDelBebe as MongoEstadoDelBebe;
 
 class EstadoBebe extends Seeder
 {
@@ -23,6 +24,7 @@ class EstadoBebe extends Seeder
 
         foreach ($estados as $estado) {
             EstadoDelBebe::create($estado);
+            MongoEstadoDelBebe::create($estado);
         }
     }
 }

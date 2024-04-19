@@ -6,6 +6,8 @@ use Jenssegers\Mongodb\Eloquent\Model;
 
 class Sensores extends Model
 {
+
+    public $timestamps = false;
     protected $connection = 'mongodb';
     protected $collection = 'sensores';
     protected $fillable = ['nombre', 'unidad'];

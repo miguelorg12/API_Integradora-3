@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Sensores as Sensor;
+use App\Models\Mongo\Sensores as MongoSensores;
 
 class Sensores extends Seeder
 {
@@ -21,11 +22,12 @@ class Sensores extends Seeder
             ['nombre' => 'Sensor de Calidad de Aire', 'unidad' => 'ppm'],
             ['nombre' => 'Sensor de Sonido', 'unidad' => 'dB'],
             ['nombre' => 'Microfono', 'unidad' => 'dB'],
-            ['nombre' => 'Buzzer' , 'Unidad' => 'db']
+            ['nombre' => 'Buzzer', 'Unidad' => 'db']
         ];
 
         foreach ($sensores as $sensor) {
             Sensor::create($sensor);
+            MongoSensores::create($sensor);
         }
     }
 }

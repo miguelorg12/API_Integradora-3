@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Incubadora;
 use App\Models\Sensores_Incubadoras;
 use App\Models\Sensores;
+use App\Models\Mongo\Sensores_Incubadoras as MongoSensores_Incubadoras;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -185,7 +186,7 @@ class Incubadoras extends Controller
             $incubadora = new Incubadora;
             $incubadora->id_hospital = $request->id_hospital;
             $incubadora->id_estado = $request->id_estado;
-            $incubadora->folio = rand(100, 999);
+            $incubadora->folio = $request->folio;
             $incubadora->save();
             $sensores = $request->input('id_sensores');
         } else {
@@ -201,10 +202,15 @@ class Incubadoras extends Controller
             if ($sensor) {
                 $folio = rand(100, 999) . strtoupper(substr($sensor->nombre, 0, 1));
                 $sensores_incubadora = new Sensores_Incubadoras;
+                $sensores_incubadoraM = new MongoSensores_Incubadoras;
                 $sensores_incubadora->id_incubadora = $incubadora->id;
                 $sensores_incubadora->id_sensor = $sensorId;
                 $sensores_incubadora->folio = $folio;
                 $sensores_incubadora->save();
+                $sensores_incubadoraM->id_incubadora = $incubadora->id;
+                $sensores_incubadoraM->id_sensor = $sensorId;
+                $sensores_incubadoraM->folio = $folio;
+                $sensores_incubadoraM->save();
             }
         }
         return response()->json(['msg' => 'Incubadora creada'], 201);

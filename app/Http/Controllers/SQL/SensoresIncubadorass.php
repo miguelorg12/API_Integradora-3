@@ -46,6 +46,7 @@ class SensoresIncubadorass extends Controller
         $sensores_incubadoras = new Sensores_Incubadoras;
         $sensores_incubadoras->id_sensor = $request->id_sensor;
         $sensores_incubadoras->id_incubadora = $request->id_incubadora;
+        $sensores_incubadoras->folio = $request->folio;
         $sensores_incubadoras->save();
         return response()->json(['msg' => 'Sensor_Incubadora creado'], 201);
     }

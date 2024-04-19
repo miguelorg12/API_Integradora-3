@@ -70,10 +70,4 @@ class Sensoress extends Controller
         $sensor->save();
         return response()->json(['msg' => 'Sensor eliminado'], 200);
     }
-
-    public function message(Request $request)
-    {
-        event(new testWebsocket($request->all()));
-        return response()->json(['msg' => $request->all()], 200);
-    }
 }
