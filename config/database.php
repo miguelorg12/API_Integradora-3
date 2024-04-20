@@ -94,7 +94,7 @@ return [
         ],
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb+srv://edsonalgarate:9UcfZ5iVbYsEqZb3@cluster0.5qwdwi7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),
+            'dsn' => env('DB_URI', 'mongodb://34.203.244.90:27117,34.203.244.90:27118'),
             'database' => 'db_integradora5',
         ],
 
