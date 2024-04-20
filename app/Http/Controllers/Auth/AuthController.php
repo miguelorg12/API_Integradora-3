@@ -180,7 +180,8 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:100|min:3|regex:/^[a-zA-Z ]*$/',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'confirm_password' => 'required|string|min:8|same:password'
+            'confirm_password' => 'required|string|min:8|same:password',
+            'id_hospital' => 'integer|required'
         ]);
         if ($validator->fails()) {
             return response()->json(["Errors" => $validator->errors()], 400);
@@ -189,11 +190,7 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->last_name = $request->last_name;
         $user->email = $request->email;
-        if ($request->id_hospital != null && $request->id_hospital != 0) {
-            $user->id_hospital = $request->id_hospital;
-        } else {
-            $user->id_hospital = 1;
-        }
+        $user->id_hospital = $request->id_hospital;
         $user->password = Hash::make($request->password);
         $user->save();
         $signed_route = URL::temporarySignedRoute(
