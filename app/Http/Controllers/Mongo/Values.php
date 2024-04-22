@@ -59,12 +59,6 @@ class Values extends Controller
         return response()->json(['msg' => 'Valores', 'data' => $values], 200);
     }
 
-    public function historial(Request $request)
-    {
-        $historial = Value::orderBy('_id', 'desc')->where('name', $request->name)->get();
-        return response()->json(['msg' => 'Historial', 'data' => $historial], 200);
-    }
-
     /**
      * Show the form for creating a new resource.
      *
