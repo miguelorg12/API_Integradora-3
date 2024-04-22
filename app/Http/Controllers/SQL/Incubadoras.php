@@ -178,6 +178,7 @@ class Incubadoras extends Controller
         $user = auth('api_jwt')->user();
         $validator = Validator::make($request->all(), [
             'id_estado' => 'required|integer',
+            'id_hospital' => 'required|exists:hospitales,id',
         ]);
         if ($validator->fails()) {
             return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
