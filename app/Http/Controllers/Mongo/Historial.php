@@ -37,7 +37,7 @@ class Historial extends Controller
                 return response()->json(['msg' => 'Sensor no encontrado'], 404);
         }
 
-        $historial = Value::orderBy('_id', 'desc')->where('name', $name)->get();
+        $historial = Value::orderBy('created_at', 'desc')->where('name', $name)->get();
         return response()->json(['msg' => 'Historial', 'data' => $historial], 200);
     }
 }
