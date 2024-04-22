@@ -80,7 +80,7 @@ class Hospitals extends Controller
         $hospital->nombre = $request->nombre;
         $hospital->direccion = $request->direccion;
         $hospital->telefono = $request->telefono;
-        $hospital->is_active = $request->is_active;
+        $hospital->is_active = $request->is_active == '1' ? true : false;
         $hospital->save();
         return response()->json(['msg' => 'Hospital actualizado'], 200);
     }
