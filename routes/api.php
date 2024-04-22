@@ -22,6 +22,7 @@ use App\Http\Controllers\SensoresIncubadorasHibrido;
 use App\Http\Controllers\SQL\Hospitals;
 use App\Http\Controllers\Mongo\Values;
 use App\Http\Controllers\Activador\BuzzerController;
+use App\Http\Controllers\Mongo\Historial;
 
 
 /*
@@ -43,6 +44,7 @@ Route::get('/server', 'serverController@index');
 
 Route::get('/values', [Values::class, 'index']);
 Route::post('/postvalues', [Values::class, 'store']);
+Route::post('/historial', [Historial::class, 'historial']);
 
 //Rutas Usuario
 Route::prefix('auth')->group(function ($router) {

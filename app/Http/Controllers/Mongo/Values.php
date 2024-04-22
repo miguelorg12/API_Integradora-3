@@ -13,7 +13,7 @@ class Values extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api_jwt', ['except' => ['store']]);
+        $this->middleware('auth:api_jwt', ['except' => ['store', 'historial']]);
     }
 
     /**
@@ -57,6 +57,12 @@ class Values extends Controller
             Mail::to($user->email)->send(new Aviso($user));
         }
         return response()->json(['msg' => 'Valores', 'data' => $values], 200);
+    }
+
+    public function historial(Request $request)
+    {
+        $historial = Value::orderBy('_id', 'desc')->where('name', $request->name)->get();
+        return response()->json(['msg' => 'Historial', 'data' => $historial], 200);
     }
 
     /**
