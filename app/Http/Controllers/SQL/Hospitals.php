@@ -72,6 +72,7 @@ class Hospitals extends Controller
             'nombre' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'direccion' => 'required|string|min:3|max:100',
             'telefono' => 'required|string|min:10|max:10|regex:/^[0-9]*$/',
+            'is_active' => 'required|boolean',
         ]);
         if ($validator->fails()) {
             return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
@@ -79,6 +80,7 @@ class Hospitals extends Controller
         $hospital->nombre = $request->nombre;
         $hospital->direccion = $request->direccion;
         $hospital->telefono = $request->telefono;
+        $hospital->is_active = $request->is_active;
         $hospital->save();
         return response()->json(['msg' => 'Hospital actualizado'], 200);
     }
