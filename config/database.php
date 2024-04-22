@@ -94,7 +94,7 @@ return [
         ],
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb://34.203.244.90:27117,34.203.244.90:27118'),
+            'dsn' => env('DB_URI', 'mongodb://174.129.160.151:27117,174.129.160.151:27118'),
             'database' => 'db_integradora5',
         ],
 

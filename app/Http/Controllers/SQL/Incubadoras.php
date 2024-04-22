@@ -184,6 +184,8 @@ class Incubadoras extends Controller
             return response()->json(['msg' => 'Error en los datos', 'errors' => $validator->errors()], 400);
         }
         if ($user->id_rol == 1) {
+
+            
             $incubadora = new Incubadora;
             $incubadora->id_hospital = $request->id_hospital;
             $incubadora->id_estado = $request->id_estado;
