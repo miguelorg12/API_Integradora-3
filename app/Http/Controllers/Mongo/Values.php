@@ -13,7 +13,7 @@ class Values extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api_jwt', ['except' => ['store', 'historial']]);
+        $this->middleware('auth:api_jwt', ['except' => ['store']]);
     }
 
     /**
@@ -25,7 +25,7 @@ class Values extends Controller
     public function index()
     {
         $user = auth('api_jwt')->user();
-        $values = Value::orderBy('_id', 'desc')
+        $values = Value::orderBy('created_at', 'desc')
             ->whereNotNull('name')
             ->where('name', '!=', 'e')
             ->where('name', '!=', '')
