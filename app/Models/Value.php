@@ -8,5 +8,5 @@ class Value extends Model
 {
     protected $connection = 'mongodb';
     protected $collection = 'Values';
-    protected $fillable = ['name', 'unit', 'value'];
+    protected $fillable = ['name', 'unit', 'value', 'created_at'];
 }
