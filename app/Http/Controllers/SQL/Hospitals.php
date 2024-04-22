@@ -65,9 +65,7 @@ class Hospitals extends Controller
     public function update(Request $request, $id)
     {
         $hospital = Hospital::where('id', $id)->where('is_active', true)->first();
-        if (!$hospital) {
-            return response()->json(['msg' => 'Hospital no encontrado'], 404);
-        }
+        
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|min:3|max:100|regex:/^[a-zA-Z0-9 ]*$/',
             'direccion' => 'required|string|min:3|max:100',
